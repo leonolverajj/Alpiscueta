@@ -258,7 +258,7 @@ def _scribe(ctx, t, T, i, book_cx, book_cy, s):
     hand = (lerp(start[0], target[0], r) + wig, lerp(start[1], target[1], r))
     sh = (start[0] + (W * 0.5 - start[0]) * 0.2, start[1] + (H * 0.5 - start[1]) * 0.2)
     el = ((sh[0] + hand[0]) / 2 + 40, (sh[1] + hand[1]) / 2 - 60)
-    F.limb(ctx, sh, el, hand, 54, 40, scol, mix(scol, "ink", 0.3), 5, seed=i + 3)
+    F.limb(ctx, sh, el, hand, 74, 56, scol, mix(scol, "ink", 0.3), 5, seed=i + 3)
     ang = math.atan2(target[1] - hand[1], target[0] - hand[0])
     F.hand(ctx, hand[0], hand[1], a=ang, s=1.25, color=hcol, kind="point")
 
@@ -632,8 +632,8 @@ def scribes(ctx, t, T, seg):
     for i, x in enumerate((0.16, 0.5, 0.84)):
         _arch(ctx, x * W - 90, 0.04 * H, 180, 0.4 * H, t, i)
     _lens_morph_diagram(ctx, t, T, W * 0.5, H * 0.25)
-    _monk_row(ctx, t, 0.6 * H, 230, (0.12, 0.34, 0.56, 0.78, 0.96), 40, "g5")
-    _monk_row(ctx, t, H * 1.0, 320, (0.22, 0.52, 0.84), 60, "g6")
+    _monk_row(ctx, t, 0.6 * H, 270, (0.12, 0.34, 0.56, 0.78, 0.96), 40, "g5")
+    _monk_row(ctx, t, H * 1.02, 390, (0.2, 0.5, 0.82), 60, "g6")
     caption_tag(ctx, "MIL AÑOS", 100, 110, t, 44, accent="red", appear=0.6)
     ui_glyphs(ctx, t, seed=16, n=5, alpha=0.6)
 
@@ -951,7 +951,8 @@ def _lift(s):
 
 
 def _raft_hand(t, pulls, yr):
-    prev = (W * 0.95, -120)
+    hover = (W * 0.86, H * 0.16)
+    prev = hover
     for tp, xc in pulls:
         g = (xc, yr - 72)
         if t < tp - 1.1:
@@ -962,8 +963,7 @@ def _raft_hand(t, pulls, yr):
         if s < 1.6:
             ly, dx = _lift(s)
             return (g[0] + dx, g[1] - ly)
-        ly, dx = _lift(1.6)
-        prev = (g[0] + dx, g[1] - ly)
+        prev = hover
     return prev
 
 
@@ -996,14 +996,14 @@ def raft(ctx, t, T, seg):
     ctx.paint_with_alpha(0.32)
 
     # HERO kneeling on the raft
-    F.character(ctx, W * 0.42, 0.44 * H, 0.78, F.HERO, "grim", t, look=0.6, tilt=-0.02)
+    F.character(ctx, W * 0.42, 0.36 * H, 0.9, F.HERO, "grim", t, look=0.6, tilt=-0.02)
 
     # the raft: logs, three of them are pulled out one by one
-    yr = 0.7 * H
-    pulls = [(T * 0.2, W * 0.5 + 2.5 * 170, "VERDAD"), (T * 0.4, W * 0.5 + 1.5 * 170, "VALORES"),
-             (T * 0.6, W * 0.5 + 0.5 * 170, "SENTIDO")]
+    yr = 0.66 * H
+    pulls = [(T * 0.2, W * 0.5 + 2.5 * 190, "VERDAD"), (T * 0.4, W * 0.5 + 1.5 * 190, "VALORES"),
+             (T * 0.6, W * 0.5 + 0.5 * 190, "SENTIDO")]
     for kx in RAFT_LOGS:
-        xc = W * 0.5 + kx * 170
+        xc = W * 0.5 + kx * 190
         lift_y, dx = 0.0, 0.0
         alpha = 1.0
         lab = None
@@ -1018,23 +1018,23 @@ def raft(ctx, t, T, seg):
         if alpha <= 0.01:
             continue
         cx_, cy_ = xc + dx, yr - lift_y
-        log = _capsule(cx_, cy_, 250, 52)
+        log = _capsule(cx_, cy_, 290, 66)
         shape(ctx, log, "rust_d", 5, seed=int(kx * 10 + 40), alpha=alpha)
-        fillp(ctx, _capsule(cx_, cy_ - 22, 230, 22), "rust", alpha=0.6 * alpha)
-        stroke(ctx, circle_pts(cx_ - 125, cy_, 30, 14), 3, "rust", closed=True, alpha=0.6 * alpha)
+        fillp(ctx, _capsule(cx_, cy_ - 28, 270, 26), "rust", alpha=0.7 * alpha)
+        stroke(ctx, circle_pts(cx_ - 145, cy_, 36, 14), 3, "gold_d", closed=True, alpha=0.7 * alpha)
         if lab:
-            text(ctx, lab, cx_, cy_ + 13, 36, FONT_CAPS, "g0", tracking=0.12, alpha=alpha)
+            text(ctx, lab, cx_, cy_ + 14, 40, FONT_CAPS, "g0", tracking=0.12, alpha=alpha)
 
     # the huge shadowy hand, approaching, grabbing, lifting
     hx, hy = _raft_hand(t, [(tp, pxc) for tp, pxc, _ in pulls], yr)
-    shoulder = (W + 200, -520)
+    shoulder = (W + 200, -200)
     el = ((shoulder[0] + hx) / 2 + 60, (shoulder[1] + hy) / 2 - 40)
     F.limb(ctx, shoulder, el, (hx, hy - 30), 170, 118, "g6", "ink", 6, seed=12)
     F.hand(ctx, hx - 8, hy - 8, a=0.0, s=4.4, color="teal_d", kind="fist")
     F.hand(ctx, hx, hy, a=0.0, s=4.4, color="g6", kind="fist")
 
     # the near water covers the bottoms of the logs
-    _sea_band(ctx, t, 0.72 * H, "sea", 22, 7)
+    _sea_band(ctx, t, 0.74 * H, "sea", 22, 7)
     ui_glyphs(ctx, t, seed=26, n=4, alpha=0.5)
 
 
