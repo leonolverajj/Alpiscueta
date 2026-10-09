@@ -345,7 +345,7 @@ def ancestors_chain(ctx, t, T, seg):
         pj = clamp((p - j * 0.12) * 1.3)
         a, b = _CHAIN_N[j], _CHAIN_N[min(j + 1, 4)]
         k = ss(pj)
-        pts = [(x + (p0[0] + (q0[0] - p0[0]) * k) * 0.9, cy + (p0[1] + (q0[1] - p0[1]) * k) * 0.9)
+        pts = [(x + (p0[0] + (q0[0] - p0[0]) * k) * 1.2, cy + (p0[1] + (q0[1] - p0[1]) * k) * 1.2)
                for p0, q0 in zip(a, b)]
         glow(ctx, x, cy, 160, "teal", 0.22)
         shape(ctx, pts, mix("g5", "ink", 0.15), 5, seed=j)
@@ -374,7 +374,7 @@ def campfire(ctx, t, T, seg):
     glow(ctx, FX, FY - 120, 760, "rust", 0.32 + 0.04 * flick)
     glow(ctx, FX, FY - 80, 330, "gold", 0.48 + 0.06 * flick)
     # the elder storyteller, behind the fire, gesturing up at the smoke
-    F.person(ctx, FX + 10, H * 0.66, 400, color="rust_d", shade="ink2", pose="stand", t=t, fx=1,
+    F.person(ctx, FX + 10, H * 0.66, 340, color="rust_d", shade="ink2", pose="stand", t=t, fx=1,
              head_c="skin2", arm_up=0.85 + 0.15 * math.sin(t * 1.7), seed=5)
     # smoke strands rising from the fire
     for i in range(5):
@@ -406,15 +406,15 @@ def campfire(ctx, t, T, seg):
     def _dragon(k):
         pts = [(W * 0.16, H * 0.36), (W * 0.22, H * 0.30), (W * 0.28, H * 0.36), (W * 0.34, H * 0.30),
                (W * 0.40, H * 0.26), (W * 0.44, H * 0.22)]
-        stroke(ctx, pts, 10, "teal_l", smooth=True, alpha=0.85 * k, taper=(0.1, 0.4))
+        stroke(ctx, pts, 13, "teal_l", smooth=True, alpha=1.0 * k, taper=(0.1, 0.4))
         shape(ctx, blade((W * 0.44, H * 0.22), (W * 0.47, H * 0.18), 26, 0.1), "teal_l", 4, alpha=k)
         stroke(ctx, [(W * 0.26, H * 0.34), (W * 0.24, H * 0.2), (W * 0.31, H * 0.28)], 6, "teal_l", alpha=0.6 * k)
 
     def _hero(k):
-        stroke(ctx, circle_pts(W * 0.7, H * 0.3, 24, 20), 6, "g0", closed=True, alpha=k)
+        stroke(ctx, circle_pts(W * 0.7, H * 0.3, 24, 20), 9, "g0", closed=True, alpha=k)
         stroke(ctx, [(W * 0.68, H * 0.34), (W * 0.72, H * 0.34), (W * 0.73, H * 0.46), (W * 0.67, H * 0.46)], 6,
                "g0", closed=True, alpha=k)
-        stroke(ctx, [(W * 0.72, H * 0.38), (W * 0.78, H * 0.2)], 7, "gold_l", alpha=k)
+        stroke(ctx, [(W * 0.72, H * 0.38), (W * 0.78, H * 0.2)], 10, "gold_l", alpha=k)
 
     def _mother(k):
         stroke(ctx, circle_pts(W * 0.47, H * 0.17, 22, 20), 6, "g0", closed=True, alpha=k)
@@ -571,7 +571,7 @@ def chimp_abstraction(ctx, t, T, seg):
             fillp(ctx, [(W * x1 + 6, H * 0.3), (W * x1 - 24, H * 0.3 - 18), (W * x1 - 24, H * 0.3 + 18)], "teal_l",
                   alpha=ss(win(k, 0.9, 1.0)))
     # the chimpanzee tribe around a big dominant one
-    chimps = [(0.2, 0.86, 1.4, 1, "g1", 0.5 + 0.5 * math.sin(t * 1.6), 1),
+    chimps = [(0.2, 0.86, 1.55, 1, "red_l", 0.5 + 0.5 * math.sin(t * 1.6), 1),
               (0.06, 0.92, 0.85, 1, "g4", 0.0, 2), (0.12, 0.66, 0.66, 1, "g5", 0.0, 3),
               (0.32, 0.92, 0.85, -1, "g4", 0.0, 4), (0.27, 0.64, 0.66, -1, "g5", 0.0, 5)]
     leaders = [(0.43, 0.88, 1.3, "cobalt", True), (0.51, 0.88, 1.33, "red", False),
@@ -593,7 +593,7 @@ def chimp_abstraction(ctx, t, T, seg):
         _fade(ctx, 1 - k, functools.partial(_leader, ctx, x, y, sc, c, crown, t, 300 + idx))
         idx += 1
     # the merged abstract ideal: gold outline, glowing
-    sm = 1.25 * ease_back(win(t, T * 0.6, T * 0.92), 1.4)
+    sm = 1.9 * ease_back(win(t, T * 0.6, T * 0.92), 1.4)
     if sm > 0.02:
         glow(ctx, tx, ty - 40, 340 * sm, "gold", 0.35)
         with at(ctx, tx, ty, sm):

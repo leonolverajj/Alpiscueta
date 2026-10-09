@@ -308,13 +308,22 @@ def _c_hijo(ctx, t, R):
                6, "gold_l", alpha=0.5, taper=(0.2, 0.6), seed=i)
     fillp(ctx, [(-R - 10, 40), (-100, 30), (0, 46), (110, 28), (R + 10, 40), (R + 10, R + 10), (-R - 10, R + 10)],
           "ink")
-    F.serpent(ctx, [(-190, 128), (-100, 118), (0, 120), (110, 134)], t, thick=46, body="teal", belly="teal_l",
-              spikes_c="ink2", head_size=0.9, seed=5, wave=0.0, open_jaw=0.0, ink=4)
     F.character(ctx, -18, -66, 0.62, F.HERO, "grim", t)
     F.limb(ctx, (46, 30), (106, -20), (94, -66), 26, 20, "coat", "coat_s", 4.5, 3)
     shape(ctx, blade((92, -74), (104, -186), 20, bend=0.05), "steel_l", 3.5, seed=8)
     stroke(ctx, [(74, -74), (110, -70)], 8, "gold", taper=(0, 0))
     F.hand(ctx, 92, -66, a=-0.2, s=0.7, color="coat", kind="fist")
+    # the slain dragon lies across the foreground
+    F.serpent(ctx, [(-210, 172), (-120, 160), (-30, 156), (60, 150), (120, 150)], t, thick=44, body="teal",
+              belly="teal_l", spikes_c="ink2", head_size=0.9, seed=5, wave=0.0, open_jaw=0.0, ink=4)
+
+
+def _flame(ctx, x0, base, L, sway, w, color, alpha=0.9):
+    """One curved flame tongue rising from (x0, base) to a tip at height L."""
+    tip = (x0 + sway, base - L)
+    pts = [(x0 - w / 2, base), (x0 - w * 0.55 + sway * 0.3, base - L * 0.5), tip,
+           (x0 + w * 0.5 + sway * 0.4, base - L * 0.45), (x0 + w / 2, base)]
+    shape(ctx, pts, color, 0, smooth=True, alpha=alpha)
 
 
 def _c_espiritu(ctx, t, R):
@@ -328,14 +337,16 @@ def _c_espiritu(ctx, t, R):
               "teal_d" if i % 3 else "sea", 4, seed=i)
         stroke(ctx, [(bx, 150), (tip[0] * 0.8 + bx * 0.2, tip[1] + 18)], 2.2, "teal", alpha=0.55, taper=(0.2, 0.6))
     glow(ctx, 0, 84, 150, "teal_l", 0.45)
-    for i in range(5):   # flame tongues rising from the bush's heart
-        x = lerp(-34, 34, i / 4)
-        L = 130 + 50 * math.sin(t * 6 + i * 1.7) + (i % 2) * 22
-        sway = math.sin(t * 4 + i) * 10
-        tip = (x * 0.4 + sway, 90 - L)
-        shape(ctx, blade((x, 96), tip, 44, bend=0.22 * (1 if i % 2 else -1)), "teal", 0, alpha=0.9)
-        shape(ctx, blade((x * 0.8, 96), (tip[0] * 0.9, 96 - L * 0.78), 22, bend=0.15), "teal_l", 0)
-    shape(ctx, blade((0, 100), (math.sin(t * 9) * 6, -30 + math.sin(t * 7) * 10), 12), "white", 0, alpha=0.95)
+    # flame tongues rising from the bush's heart: curved outer, lighter inner, white core
+    for i in range(5):
+        x0 = lerp(-40, 40, i / 4)
+        L = (120 + 60 * math.sin(t * 6 + i * 1.7) + (i % 2) * 20) * (1 - 0.25 * abs(i - 2) / 2)
+        _flame(ctx, x0, 96, L, math.sin(t * 4 + i) * 10, 52, "teal", 0.9)
+    for i in range(3):
+        x0 = lerp(-22, 22, i / 2)
+        L = (100 + 40 * math.sin(t * 7 + i * 2.3)) * (1 - 0.2 * abs(i - 1))
+        _flame(ctx, x0, 96, L, math.sin(t * 5 + i * 1.1) * 8, 28, "teal_l", 0.95)
+    _flame(ctx, 0, 100, 110 + 14 * math.sin(t * 9), math.sin(t * 7) * 5, 12, "white", 0.95)
     particles(ctx, t, 26, seed=4, color="teal_l", region=(-R, -R, R, R), speed=(-6, -34), size=(1.0, 2.6),
               alpha=0.7)
 
@@ -361,8 +372,8 @@ def _medallion(ctx, t, cx, cy, R, appear, base, content, label, words, seed):
         if ka <= 0.01:
             continue
         a = math.radians(-135 + 90 * j)
-        x = cx + math.cos(a) * (R + 124)
-        y = cy + math.sin(a) * (R + 124) * 0.92 + math.sin(t * 0.8 + j) * 6
+        x = cx + math.cos(a) * (R + 66)
+        y = cy + math.sin(a) * (R + 66) * 0.92 + math.sin(t * 0.8 + j) * 6
         pulse = 0.6 + 0.4 * math.sin(t * 1.5 + j * 2.1)
         text(ctx, w, x, y, 26, FONT_CAPS, "g2", tracking=0.1, alpha=0.9 * ka * pulse)
 
@@ -508,7 +519,7 @@ def _hero(ctx, x, y, s, t, open_k, wind, light):
             F.head(ctx, c, "grim", t, wind)
             if light > 0.01:
                 fillp(ctx, [(8, -96), (72, -44), (70, 6), (44, 60), (16, 88), (-4, -40)], "gold_l",
-                      alpha=0.38 * light)
+                      alpha=0.32 * light)
                 glow(ctx, 40, -30, 200, "gold_l", 0.3 * light)
                 stroke(ctx, [(-40, -118), (10, -150), (62, -118)], 6, "gold_l", alpha=0.6 * light, taper=(0.3, 0.3))
             _lids(ctx, open_k)
@@ -540,6 +551,7 @@ def hero_final(ctx, t, T, seg):
         fillp(ctx, beam, "gold_l", alpha=0.22 * light)
 
     _eye_halo(ctx, hx, hy - 30, 330 * hs / 1.45, ring, t)
+    glow(ctx, hx, H * 1.02, 640, "gold_l", 0.22 * light)   # floor light under his feet
     speedlines(ctx, hx, hy, t, 30, 420, 1500, "gold_l", alpha=0.12 * step)
     _hero(ctx, hx, hy, hs, t, open_k, wind, light)
     particles(ctx, t, 70, seed=17, color="gold_l", alpha=0.55, speed=(-8, -46), size=(1.0, 3.0))

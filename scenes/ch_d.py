@@ -198,7 +198,8 @@ def gods_merge(ctx, t, T, seg):
             shape(ctx, rect, "g0", 3, alpha=0.5 + 0.5 * d)
             text(ctx, name, 0, 8, 22, FONT_CAPS, "ink", tracking=0.04, alpha=0.5 + 0.5 * d)
 
-    _center_tag(ctx, "DIOS A + DIOS B → DIOS C", H * 0.07, t, size=40, appear=T * 0.12, accent="red")
+    # Oswald has no arrow glyph, so the caption uses ">"
+    _center_tag(ctx, "DIOS A + DIOS B  >  DIOS C", H * 0.07, t, size=40, appear=T * 0.12, accent="red")
 
 
 # ================================================================== 2. world_breaks (s34)
@@ -934,7 +935,7 @@ def summit(ctx, t, T, seg):
     if k_band > 0:
         fillp(ctx, [(0, H * 0.8), (W, H * 0.8), (W, H * 0.95), (0, H * 0.95)], "night", alpha=0.72 * k_band)
     words = ["ATENCIÓN", "VERDAD", "VALOR", "MUNDO"]
-    size = 84
+    size = 60
     wd = [text_width(ctx, w, size, FONT_TITLE, tracking=0.06) for w in words]
     sep = 60
     total = sum(wd) + sep * (len(words) - 1)
