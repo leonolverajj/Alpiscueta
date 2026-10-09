@@ -418,7 +418,7 @@ def deep_waters(ctx, t, T, seg):
         fillp(ctx, circle_pts(x, y, rng.uniform(1, 2.2), 6), "g3", alpha=0.25 + 0.2 * math.sin(t * 1.5 + i))
 
     _sea(ctx, t, 90)
-    sx = lerp(-260, W + 260, ease_io(u))
+    sx = lerp(W * 0.08, W * 0.92, u)
     sy = H * 0.36 + math.sin(t * 0.9) * 24
     fade_in = ss(win(u, 0.04, 0.2)) * (1 - ss(win(u, 0.9, 1.0)))
     for j in range(5):   # faint trail behind the spirit
