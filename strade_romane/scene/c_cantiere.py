@@ -7,7 +7,7 @@ import random
 import cairo
 
 from motore.film import scena
-from motore.linea import (BG, H, W, Pen, arc, lerp2, at, catmull, clamp, ease_in, ease_io, ease_out, ellipse, lerp, morph,
+from motore.linea import (BG, H, W, Pen, arc, lerp2, length, at, catmull, clamp, ease_in, ease_io, ease_out, ellipse, lerp, morph,
                           resample, rot, smooth, trim, wave, win)
 from motore.omino import DOWN, noodle, omino
 from motore.personaggi import face, mitten, mulo
@@ -282,6 +282,8 @@ def _section_geo():
         if TX0 - 30 < x < TX1 + 30 and y < DEPTH + 40:
             continue
         if x > 1470 and y < 360:
+            continue
+        if y > 370:
             continue
         if rng.random() > 0.55 - y / 1400:
             continue
@@ -592,6 +594,7 @@ def cantiere(pen, t, T, appear, vanish):
         nk = win(t, t_note, t_note + 1.4)
         if nk > 0:
             pen.text("* gli strati cambiavano da luogo a luogo", RCX, DEPTH + 96, 38, 0.7 * a, reveal=nk)
+            _road_types(pen, t, C("ogni strada"), vanish, a)
         # ---- the top-view inset of the paving
         ik_ = pulse(t, t_inset - 0.3, t_crown - 0.2, 0.7)
         if ik_ > 0:
@@ -623,6 +626,39 @@ def cantiere(pen, t, T, appear, vanish):
             pen.text("operai", 1680, -372, 44, 0.8 * a, reveal=ok)
     road = _road_profile(dig, level, top_k, ditch_k)
     return [(x, y + G) for x, y in road]
+
+
+def _road_types(pen, t, t0, vanish, a):
+    """Small side sections: the three Roman road classes (earth, gravel, paved)."""
+    rng = random.Random(31)
+    y0 = 440
+    # via terrena: just beaten earth, slightly cambered
+    k1 = win(t, t0, t0 + 1.2)
+    if k1 > 0:
+        cx = 200
+        top = [(cx - 120 + i * 12, y0 - 10 * (1 - ((i - 10) / 10) ** 2)) for i in range(21)]
+        pen.lines([top], k1, vanish, 0.85 * a, 0.9, seed=860)
+        pen.lines([[(cx - 100 + j * 22, y0 + 12 + (j % 3) * 9), (cx - 90 + j * 22, y0 + 13 + (j % 3) * 9)] for j in range(10)],
+                  k1, vanish, 0.4 * a, 0.6, seed=861)
+        pen.text("via terrena", cx, y0 + 74, 34, 0.75 * a, reveal=k1)
+        pen.text("terra battuta", cx, y0 + 106, 26, 0.5 * a, reveal=win(t, t0 + 0.5, t0 + 1.5))
+    # via glarea strata: gravel on a stone bed
+    k2 = win(t, t0 + 0.7, t0 + 1.9)
+    if k2 > 0:
+        cx = 1560
+        top = [(cx - 120 + i * 12, y0 - 12 * (1 - ((i - 10) / 10) ** 2)) for i in range(21)]
+        box = [(cx - 116, y0 - 2), (cx - 112, y0 + 46), (cx + 112, y0 + 46), (cx + 116, y0 - 2)]
+        pen.lines([top, box], k2, vanish, 0.85 * a, 0.9, seed=870)
+        pebbles = [ellipse(cx - 100 + (j * 37) % 200, y0 + 6 + (j * 13) % 18, 3.5, 2.6, 7) for j in range(16)]
+        stones = [ellipse(cx - 86 + j * 43, y0 + 34, 15, 8, 10) for j in range(5)]
+        pen.lines(pebbles + stones, k2, vanish, 0.6 * a, 0.6, seed=872)
+        pen.text("via glarea strata", cx, y0 + 88, 34, 0.75 * a, reveal=k2)
+        pen.text("ghiaia", cx, y0 + 120, 26, 0.5 * a, reveal=win(t, t0 + 1.2, t0 + 2.2))
+    # the big one in the middle: paved
+    k3 = win(t, t0 + 1.4, t0 + 2.4)
+    if k3 > 0:
+        pen.text("via silice strata", RCX, -170, 40, 0.8 * a, reveal=k3)
+        pen.text("lastricata", RCX, -134, 28, 0.55 * a, reveal=win(t, t0 + 1.9, t0 + 2.9))
 
 
 def _legionary(pen, x, y, t, t_rest, alpha, rain_k):
@@ -1153,7 +1189,7 @@ def tavole(pen, t, T, appear, vanish):
 # ======================================================================= b08 miliario
 MIL_X = 1080                 # where the milestone stops
 MIL_H, MIL_R = 450, 64
-ROMA = (820.0, 540.0)        # convergence point in the last shot (≈ where Rome sits on the next map)
+ROMA = (950.0, 550.0)        # convergence point in the last shot (= where Rome sits on the next map)
 
 
 def _walk_clock(t, t0, t1, boost=3.2):
@@ -1269,7 +1305,7 @@ def forum(pen, reveal, start, alpha):
 
 
 # the great roads leaving Rome (screen angle, 0 = east, y down) — north is up
-VIAE = [("Flaminia", -82), ("Salaria", -48), ("Tiburtina", -12), ("Latina", 52), ("Appia", 28),
+VIAE = [("Flaminia", -82), ("Salaria", -48), ("Tiburtina", -12), ("Latina", 58), ("Appia", 21),
         ("Ostiense", 142), ("Aurelia", 186), ("Cassia", -118)]
 
 
@@ -1403,7 +1439,7 @@ def miliario(pen, t, T, appear, vanish):
                      reveal=win(t, t_km, t_km + 1.2))
         # the traveller
         exitk = ease_io(win(t, t_20 - 1.6, t_20 + 0.6))
-        ta = aA
+        ta = aA * smooth(win(t, 0.6, 1.6))
         px = 620 + 70 * smooth(win(t, t_stop + 0.1, t_stop + 1.4)) + exitk * 900
         w_ = max(walking, pulse(t, t_stop + 0.1, t_stop + 1.4, 0.3), smooth(win(t, t_20 - 1.6, t_20 - 1.2)))
         clk = clock if t < t_stop + 0.2 else _walk_clock(t_stop + 0.2, t_ff0, t_stop) + (t - t_stop - 0.2)
@@ -1442,8 +1478,6 @@ def miliario(pen, t, T, appear, vanish):
         if rk > 0:
             for i, (name, ang) in enumerate(VIAE):
                 ray = via_ray(ang)
-                if name == "Appia":
-                    continue
                 inward = list(reversed(ray))
                 k = clamp(rk * 1.6 - i * 0.08)
                 pen.line(trim(inward, 0.0, 0.93), 0.8, 0.75 * a, reveal=ease_out(k), start=vanish, seed=1450 + i)
@@ -1464,8 +1498,477 @@ def miliario(pen, t, T, appear, vanish):
                         qp = lerp2(R_[qi], R_[min(24, qi + 1)], q - qi)
                         pen.dot(qp[0], qp[1], 3.2, a * smooth(rk) * smooth(win(u, 0.12, 0.3)) * 0.85)
             pen.text("Roma", ROMA[0] - 80, ROMA[1] + 64, 46, a, reveal=win(t, t_punto + 1.0, t_punto + 2.0))
-        appia = via_ray(28)
+        full = via_ray(21)
+        appia = trim(full, 0.0, 480.0 / length(full))
         rk2 = ease_io(win(t, t_punto, t_punto + 2.4))
         if rk2 > 0:
             road = morph(flat(), appia, rk2, 120)
+    return road
+
+
+# ======================================================================= b10 posta
+from motore.personaggi import tube  # noqa: E402
+
+
+def leg_ik(hip, foot, l1, l2, joint_forward):
+    dx, dy = foot[0] - hip[0], foot[1] - hip[1]
+    d = clamp(math.hypot(dx, dy), 1e-3, l1 + l2 - 0.5)
+    base = math.atan2(dy, dx)
+    al = math.acos(clamp((l1 * l1 + d * d - l2 * l2) / (2 * l1 * d), -1, 1))
+    js = [(hip[0] + math.cos(base + sg * al) * l1, hip[1] + math.sin(base + sg * al) * l1) for sg in (1, -1)]
+    js.sort(key=lambda p: p[0])
+    j = js[1] if joint_forward else js[0]
+    # put the foot exactly at reach
+    ff = (hip[0] + dx / max(1e-3, math.hypot(dx, dy)) * d, hip[1] + dy / max(1e-3, math.hypot(dx, dy)) * d)
+    return j, ff
+
+
+# body outline (local, facing right, hooves at y = 0); pivot of the body = (0, -160)
+_H_BACK = [(-104, -176), (-70, -186), (-20, -180), (30, -186), (64, -194)]
+_H_BELLY = [(98, -150), (92, -122), (54, -104), (0, -99), (-52, -106), (-84, -124)]
+_H_RUMP = [(-104, -176), (-116, -154), (-108, -132), (-84, -124)]
+_H_NECK_TOP = [(0, 0), (34, -40), (62, -76), (78, -88)]           # relative to the withers (64, -194)
+_H_NECK_FRONT = [(70, -44), (52, -10), (40, 20), (34, 44)]
+_H_HEAD = [(78, -88), (94, -90), (112, -72), (136, -42), (146, -26), (140, -14), (120, -14), (98, -26), (80, -40), (70, -44)]
+
+
+def horse(pen, x, y, s, ph, g, t, alpha, fx=1, head_down=0.0, seed=0, saddle=True, tired=0.0):
+    """A line-art horse with a rotary gallop. ph: gait phase (cycles), g: 0 standing .. 1 full gallop.
+    Returns the rider's seat in screen coords and the body pitch."""
+    L = pen.line
+    two = 2 * math.pi
+    bob = -13 * g * (0.5 + 0.5 * math.sin(two * ph)) + 1.6 * math.sin(t * 1.7 + seed) * (1 - g)
+    pitch = 0.07 * g * math.cos(two * ph)
+    seat_local = None
+    with at(pen, x, y, s, fx=fx):
+        piv = (0, -160 + bob)
+
+        def bf(p):        # body frame → base frame
+            q = rot((p[0], p[1] + 160), pitch)
+            return (q[0] + piv[0], q[1] + piv[1])
+
+        legs = [("hind", -70, 0.0, 0.7), ("fore", 76, 0.42, 0.7), ("hind", -62, 0.10, 1.0), ("fore", 84, 0.52, 1.0)]
+        for kind, hx, off, la in legs:
+            hip = bf((hx, -124))
+            q = ph + off
+            c, sn = math.cos(two * q), math.sin(two * q)
+            reach = 62 * g
+            if kind == "fore":
+                fxp = hx + 10 + reach * c
+                l1, l2 = 66, 66
+            else:
+                fxp = hx - 8 + reach * c
+                l1, l2 = 62, 70
+            lift = g * (56 if kind == "fore" else 44) * max(0.0, -sn)
+            foot = (fxp, -8 - lift)
+            j, ff = leg_ik(hip, foot, l1, l2, joint_forward=(kind == "fore"))
+            tube(pen, [hip, j, ff], 28, 11, alpha * la, seed=seed + int(hx), lw=0.95)
+            # hoof
+            a_ = math.atan2(ff[1] - j[1], ff[0] - j[0]) - math.pi / 2
+            hf = [rot(p, a_) for p in [(-8, 0), (-9, 9), (10, 9), (8, 0)]]
+            L([(ff[0] + p[0], ff[1] + p[1]) for p in hf], 0.9, alpha * la, smooth_=False, seed=seed + 7 + int(hx))
+        with at(pen, piv[0], piv[1], 1.0, pitch):
+            sh = lambda pts: [(px, py + 160) for px, py in pts]
+            back = list(_H_BACK)
+            if saddle:
+                back_a, back_b = back[:3], back[2:]
+                L(sh(back_a), 1.1, alpha, seed=seed + 1)
+                L(sh(back_b), 1.1, alpha, seed=seed + 2)
+                L(sh([(-34, -176), (-30, -150), (30, -152), (34, -182)]), 0.8, alpha * 0.8, seed=seed + 3)   # saddle cloth
+            else:
+                L(sh(back), 1.1, alpha, seed=seed + 1)
+            L(sh(_H_BELLY), 1.1, alpha, seed=seed + 4)
+            L(sh(_H_RUMP), 1.1, alpha, seed=seed + 5)
+            # tail: streams back at the gallop, swishes when standing
+            sw = math.sin(t * 2.1 + seed) * (1 - g) * 10
+            tl = []
+            for k in range(3):
+                fl = math.sin(two * ph + k) * 10 * g
+                tl.append(sh([(-106, -172 + k * 4), (-128 - 30 * g, -158 + 6 * k - 20 * g + fl * 0.4),
+                              (-140 - 60 * g + sw, -120 + 8 * k - 50 * g + fl), (-138 - 80 * g + sw * 1.4, -86 + 6 * k - 70 * g + fl)]))
+            for k, st in enumerate(tl):
+                L(st, 0.8, alpha * (1.0 - 0.2 * k), seed=seed + 10 + k)
+            # neck and head, nodding with the stride
+            nod = 0.09 * g * math.sin(two * ph + 1.2) + head_down * 0.75 + 0.03 * math.sin(t * 0.9 + seed) * (1 - g)
+            with at(pen, 64, -194 + 160, 1.0, nod):
+                L(_H_NECK_TOP, 1.1, alpha, seed=seed + 20)
+                L(_H_NECK_FRONT, 1.1, alpha, seed=seed + 21)
+                L(_H_HEAD, 1.1, alpha, seed=seed + 22)
+                pen.dot(136, -30, 2.6, alpha)                       # nostril
+                if tired > 0.5:
+                    L([(100, -66), (108, -63), (116, -66)], 0.9, alpha, seed=seed + 23)
+                    L([(98, -74), (116, -76)], 0.7, alpha, seed=seed + 24)
+                else:
+                    pen.dot(106, -66, 3.6, alpha)
+                L([(118, -22), (128, -20)], 0.6, alpha * 0.7, seed=seed + 25)   # mouth
+                fl = wave(t, 0.6, seed) * 0.1
+                for k, bx in enumerate((80, 88)):
+                    a_ = -1.9 + k * 0.25 + fl - 0.5 * tired - 0.3 * g
+                    tip = (bx + math.cos(a_) * 26, -90 + math.sin(a_) * 26)
+                    L([(bx - 4, -88), ((bx + tip[0]) / 2 - 4, (-88 + tip[1]) / 2), tip, ((bx + tip[0]) / 2 + 5, (-88 + tip[1]) / 2),
+                       (bx + 6, -90)], 0.8, alpha, seed=seed + 26 + k)
+                for k in range(5):       # mane
+                    bx, by = 8 + k * 15, -10 - k * 16
+                    fl = math.sin(two * ph * 1.0 + k * 0.8) * 5 * g + math.sin(t * 1.3 + k) * 2
+                    L([(bx, by), (bx - 14 - 10 * g, by + 4 + fl * 0.5), (bx - 26 - 18 * g, by + 14 + fl)], 0.7,
+                      alpha * 0.85, seed=seed + 30 + k)
+                if saddle:      # reins
+                    L([(112, -30), (60, -10), (-20, 30)], 0.5, alpha * 0.7, seed=seed + 36)
+        seat_local = bf((2, -192))
+    sx = x + seat_local[0] * s * fx
+    sy = y + seat_local[1] * s
+    return sx, sy, pitch
+
+
+def rider(pen, x, y, s, t, alpha, lean=0.0, expr="determined", hold=None, legs="ride", gallop=0.0, fx=1, seed=0,
+          cloak=1.0, look=0.0, hat=True, crown=False, hand_up=0.0):
+    """A courier seated at (x, y) (the seat), facing right."""
+    L = pen.line
+    with at(pen, x, y, s, fx=fx):
+        # near leg
+        if legs == "ride":
+            knee, ft = (34, 40), (24, 96)
+        else:   # seated in a cart: legs forward
+            knee, ft = (50, 6), (58, 58)
+        noodle(pen, (6, 4), knee, 6, 1.1, alpha, seed=seed)
+        noodle(pen, knee, ft, -6, 1.1, alpha, seed=seed + 1)
+        L([(ft[0] - 8, ft[1] - 6), (ft[0] - 8, ft[1] + 2), (ft[0] + 18, ft[1] + 3), (ft[0] + 16, ft[1] - 4)], 0.9, alpha,
+          seed=seed + 2)
+        with at(pen, 0, 0, 1.0, lean):
+            bob = math.sin(t * 2 * math.pi * 2.2) * 3 * gallop
+            body = [(-30, 6), (-36, -30), (-28, -66), (-14, -84 + bob), (16, -84 + bob), (30, -64), (34, -30), (28, 6)]
+            L(body, 1.1, alpha, seed=seed + 3)
+            L([(-32, -22), (0, -18), (32, -24)], 0.7, alpha * 0.85, seed=seed + 4)
+            # cloak streaming behind
+            fl = math.sin(t * 9) * 8 * cloak * (0.4 + gallop)
+            L([(-14, -80 + bob), (-60 - 30 * gallop, -74 + fl), (-100 - 40 * gallop, -50 - fl), (-70 - 10 * gallop, -36)], 0.9,
+              alpha * 0.9 * cloak, seed=seed + 5)
+            # back arm: reins or a raised message
+            sh_b = (-10, -76 + bob)
+            if hand_up > 0:
+                el = (lerp(0, -18, hand_up), lerp(-40, -118, hand_up))
+                hd = (lerp(40, 4, hand_up), lerp(-30, -150, hand_up))
+            else:
+                el, hd = (10, -40), (50, -36)
+            noodle(pen, sh_b, hd, 8, 1.05, alpha * 0.85, seed=seed + 6)
+            mitten(pen, hd[0], hd[1], 0, 8, alpha * 0.85, seed=seed + 7)
+            if hold == "scroll" and hand_up > 0.05:
+                k = hand_up
+                L([(hd[0] - 18, hd[1] - 26), (hd[0] + 18, hd[1] - 26), (hd[0] + 18, hd[1] - 4), (hd[0] - 18, hd[1] - 4),
+                   (hd[0] - 18, hd[1] - 26)], 0.9, alpha * k, smooth_=False, seed=seed + 8)
+                pen.dot(hd[0], hd[1] - 15, 4.5, alpha * k)
+                L([(hd[0], hd[1] - 10), (hd[0] - 4, hd[1] + 2)], 0.6, alpha * k, seed=seed + 9)
+            # head
+            hx, hy = 10, -136 + bob
+            face(pen, hx, hy, 40, expr, look, t, True, 1.0, True, seed + 10, alpha)
+            if hat:
+                L([(hx - 44, hy - 18), (hx - 26, hy - 40), (hx + 12, hy - 44), (hx + 38, hy - 26), (hx - 44, hy - 18)], 0.9,
+                  alpha, seed=seed + 11)
+            else:
+                L([(hx - 36, hy - 22), (hx - 24, hy - 40), (hx + 4, hy - 46), (hx + 30, hy - 36)], 0.9, alpha, seed=seed + 11)
+                if crown:   # a simple laurel sprig for a young noble
+                    for k in range(4):
+                        a_ = math.radians(200 + k * 22)
+                        px, py = hx + math.cos(a_) * 42, hy + math.sin(a_) * 40
+                        L(ellipse(px, py, 6, 3, 8, a0=a_), 0.6, alpha * 0.8, seed=seed + 12 + k)
+            # front arm with the reins
+            sh_f = (14, -76 + bob)
+            hd = (66, -40 + bob * 0.5)
+            noodle(pen, sh_f, hd, 10, 1.1, alpha, seed=seed + 20)
+            mitten(pen, hd[0], hd[1], -0.4, 8, alpha, seed=seed + 21)
+
+
+def _gait_clock(t, fn, steps=None):
+    """∫0^t fn(u) du with a fixed step (fn smooth)."""
+    n = steps or max(8, int(t * 12))
+    h = t / n
+    acc = 0.0
+    for i in range(n):
+        acc += fn((i + 0.5) * h) * h
+    return acc
+
+
+def building_mutatio(cx, g):
+    w, h = 300, 170
+    x0, x1 = cx - w / 2, cx + w / 2
+    walls = [[(x0, g), (x0, g - h), (x1, g - h), (x1, g)]]
+    roof = [[(x0 - 26, g - h + 4), (cx, g - h - 92), (x1 + 26, g - h + 4)]]
+    door = [[(cx - 30, g), (cx - 30, g - 92), (cx + 30, g - 92), (cx + 30, g)]]
+    win_ = [[(x0 + 34, g - 120), (x0 + 74, g - 120), (x0 + 74, g - 90), (x0 + 34, g - 90), (x0 + 34, g - 120)]]
+    tiles = [[(lerp(x0 - 26, cx, k / 5), lerp(g - h + 4, g - h - 92, k / 5)), (lerp(x1 + 26, cx, k / 5), lerp(g - h + 4, g - h - 92, k / 5))]
+             for k in (2, 4)]
+    trough = [[(x1 + 20, g), (x1 + 26, g - 34), (x1 + 120, g - 34), (x1 + 126, g)], [(x1 + 30, g - 26), (x1 + 116, g - 26)]]
+    post = [[(x0 - 60, g), (x0 - 60, g - 210)], [(x0 - 60, g - 196), (x0 + 50, g - 196)],
+            [(x0 - 40, g - 196), (x0 - 40, g - 176)], [(x0 + 30, g - 196), (x0 + 30, g - 176)],
+            [(x0 - 70, g - 176), (x0 + 60, g - 176), (x0 + 60, g - 122), (x0 - 70, g - 122), (x0 - 70, g - 176)]]
+    return walls + roof + door + win_ + tiles + trough, post, (x0 - 5, g - 140)
+
+
+def building_mansio(cx, g):
+    w, h = 330, 270
+    x0, x1 = cx - w / 2, cx + w / 2
+    walls = [[(x0, g), (x0, g - h), (x1, g - h), (x1, g)], [(x0, g - 140), (x1, g - 140)]]
+    roof = [[(x0 - 24, g - h + 6), (x0 + 30, g - h - 70), (x1 - 30, g - h - 70), (x1 + 24, g - h + 6)]]
+    door = [[(x0 + 40, g), (x0 + 40, g - 100), (x0 + 100, g - 100), (x0 + 100, g)]]
+    wins = [[(x1 - 120, g - 112), (x1 - 50, g - 112), (x1 - 50, g - 60), (x1 - 120, g - 60), (x1 - 120, g - 112)],
+            [(x0 + 50, g - 236), (x0 + 150, g - 236), (x0 + 150, g - 168), (x0 + 50, g - 168), (x0 + 50, g - 236)]]
+    sign = [[(x1, g - 190), (x1 + 70, g - 190)], [(x1 + 14, g - 190), (x1 + 14, g - 176)], [(x1 + 62, g - 190), (x1 + 62, g - 176)],
+            [(x1 - 10, g - 176), (x1 + 102, g - 176), (x1 + 102, g - 128), (x1 - 10, g - 128), (x1 - 10, g - 176)]]
+    return walls + roof + door + wins, sign, (x0 + 100, g - 170)
+
+
+def cypress(x, g, h):
+    return [(x - 3, g), (x - 15, g - h * 0.35), (x - 10, g - h * 0.75), (x, g - h), (x + 10, g - h * 0.75), (x + 15, g - h * 0.35),
+            (x + 3, g)]
+
+
+@scena("posta")
+def posta(pen, t, T, appear, vanish):
+    a = 1.0 - vanish
+    C = lambda ph, f=0.0: cue(T, "posta", ph, f)
+    t_cp = C("cursus publicus")
+    t_serv = C("il servizio")
+    t_staz = C("stazioni")
+    t_camb = C("cambiare i cavalli")
+    t_loc = C("e locande")
+    t_cor = C("Un corriere")
+    t_50 = C("una cinquantina")
+    t_pli = C("E Plinio")
+    t_tib = C("il futuro imperatore")
+    t_ger = C("malato in Germania")
+    t_200 = C("coprì duecento")
+    t_notte = C("e una notte")
+    V = 640.0
+    t_stop = t_camb - 0.2
+    t_dec = t_stop - 2.6
+    t_hop = t_camb + 0.2
+    t_go = t_hop + 0.9
+    s_h = 0.95
+    s_r = 0.76
+    # camera speed and integrated scroll
+    def vcam(u):
+        return V * (1 - smooth(win(u, t_dec, t_stop))) + V * smooth(win(u, t_go + 0.4, t_go + 2.6))
+    scroll = _gait_clock(t, vcam)
+    scroll_stop = _gait_clock(t_stop, vcam)
+    rel = scroll - scroll_stop                  # world offset since the stop (≤ 0 before)
+    # ---------------------------------------------------------------- road (rises over the Alps at the end)
+    climb = ease_io(win(t, t_tib - 0.5, T - 0.4))
+
+    def ground(x):
+        u = clamp((x - 260) / 1600)
+        return ROAD_Y - climb * (330 * smooth(u) + 40 * math.sin(u * 7.0) * u)
+
+    road = [(x, ground(x)) for x in range(-60, W + 61, 40)]
+    # ---------------------------------------------------------------- background: cypresses / Alps / sky
+    far = []
+    for k in range(8):
+        x = (k * 331 + 90 - scroll * 0.3) % 2650 - 300
+        h_ = 100 + (k * 41) % 60
+        far.append(cypress(x, 700, h_))
+    alps_k = smooth(win(t, t_pli, t_tib + 0.6))
+    farA = (1 - alps_k) * (1 - pulse(t, t_staz - 2.6, t_cor + 1.2, 1.0))
+    pen.lines(far, appear, vanish, 0.35 * a * farA, 0.7, seed=1500)
+    pen.lines([[(-60, 700), (W + 60, 700)]], appear, vanish, 0.16 * a * farA, 0.6, seed=1501)
+    if alps_k > 0:
+        px_ = -(scroll * 0.05) % 600
+        peaks = []
+        for j in range(5):
+            bx = 300 + j * 420 - px_
+            hh = 300 + (j * 97) % 160
+            peaks.append([(bx - 260, 720), (bx - 120, 720 - hh * 0.55), (bx - 70, 720 - hh * 0.5), (bx, 720 - hh),
+                          (bx + 90, 720 - hh * 0.6), (bx + 140, 720 - hh * 0.65), (bx + 280, 720)])
+            peaks.append([(bx - 46, 720 - hh * 0.8), (bx - 20, 720 - hh * 0.74), (bx, 720 - hh * 0.84), (bx + 26, 720 - hh * 0.76),
+                          (bx + 52, 720 - hh * 0.82)])
+        ctx = pen.ctx
+        ctx.save()
+        ctx.new_path()
+        ctx.move_to(-200, -200)
+        ctx.line_to(W + 200, -200)
+        for x in range(W + 200, -201, -40):
+            ctx.line_to(x, ground(x) - 4)
+        ctx.close_path()
+        ctx.clip()
+        pen.lines(peaks, alps_k, vanish, 0.42 * a, 0.75, seed=1510, smooth_=False)
+        ctx.restore()
+    # sun → moon over the record ride
+    dayk = win(t, t_tib - 1.0, t_200)
+    nightk = win(t, t_200 - 0.2, T)
+    if 0 < dayk and t < t_200 + 0.4:
+        ang = math.radians(lerp(200, 345, ease_io(dayk)))
+        sx, sy = 960 + math.cos(ang) * 840, 820 + math.sin(ang) * 540
+        sa = a * smooth(win(t, t_tib - 1.0, t_tib)) * (1 - smooth(win(t, t_200 - 0.2, t_200 + 0.4)))
+        pen.line(ellipse(sx, sy, 34, 34, 24), 1.0, sa, seed=1520)
+        rays = [[(sx + math.cos(k * 0.785 + t * 0.4) * 46, sy + math.sin(k * 0.785 + t * 0.4) * 46),
+                 (sx + math.cos(k * 0.785 + t * 0.4) * 62, sy + math.sin(k * 0.785 + t * 0.4) * 62)] for k in range(8)]
+        pen.lines(rays, 1.0, 0.0, sa * 0.8, 0.7, seed=1521)
+    if nightk > 0:
+        ang = math.radians(lerp(222, 300, ease_io(nightk)))
+        mx_, my_ = 960 + math.cos(ang) * 840, 760 + math.sin(ang) * 430
+        ma = a * smooth(win(t, t_200 - 0.2, t_200 + 0.8))
+        pen.line(arc(mx_, my_, 32, math.radians(-60), math.radians(200), 20), 1.0, ma, seed=1530)
+        pen.line(arc(mx_ + 14, my_ - 6, 26, math.radians(-40), math.radians(170), 18), 0.9, ma, seed=1531)
+        for k in range(16):
+            sx, sy = (k * 487) % 1840 + 40, 70 + (k * 211) % 330
+            tw = 0.6 + 0.4 * math.sin(t * 2.0 + k)
+            pen.dot(sx, sy, 2.2, ma * tw * smooth(win(t, t_200 + 0.2 + k * 0.05, t_200 + 1.0 + k * 0.05)))
+    # ---------------------------------------------------------------- the relay station and the inn
+    stat_x = 520 - rel
+    inn_x = 1600 - rel
+    if -700 < stat_x < 2600:
+        bk = win(t, t_staz - 2.8, t_staz + 0.2)
+        st, post, sign_at = building_mutatio(stat_x, ROAD_Y)
+        pen.lines(st, bk, vanish, 0.62 * a, 0.9, seed=1540, smooth_=False)
+        pen.lines(post, bk, vanish, 0.8 * a, 0.8, seed=1560, smooth_=False)
+        pen.text("mutatio", sign_at[0], sign_at[1] + 2, 40, a * 0.9 * bk, reveal=win(t, t_staz, t_staz + 0.8))
+    if -700 < inn_x < 2700:
+        bk = win(t, t_staz - 1.8, t_staz + 1.2)
+        mn, sign, win_at = building_mansio(inn_x, ROAD_Y)
+        pen.lines(mn, bk, vanish, 0.62 * a, 0.9, seed=1570, smooth_=False)
+        pen.lines(sign, bk, vanish, 0.8 * a, 0.8, seed=1590, smooth_=False)
+        x1 = inn_x + 165
+        pen.text("mansio", x1 + 46, ROAD_Y - 142, 38, a * 0.9 * bk, reveal=win(t, t_loc, t_loc + 0.8))
+        # a sleepy guest at the upper window
+        gk = smooth(win(t, t_loc - 0.2, t_loc + 0.8)) * a
+        if gk > 0:
+            gx, gy = win_at[0] - 50, win_at[1] - 4
+            gy += 6 + 3 * math.sin(t * 1.2)
+            face(pen, gx, gy, 28, "squint", 0, t, False, 0.8, True, 1600, gk)
+            pen.line([(gx - 30, gy - 8), (gx - 16, gy - 40), (gx + 16, gy - 36), (gx + 46, gy - 10), (gx + 56, gy + 2)], 0.8, gk,
+                     seed=1601)           # nightcap
+            pen.dot(gx + 58, gy + 4, 4.5, gk)
+            pen.line([(gx - 50, gy + 34), (gx + 50, gy + 34)], 0.6, gk * 0.7, seed=1602)
+            for j in range(3):
+                q = (t * 0.35 + j / 3) % 1
+                pen.text("z", gx + 50 + 50 * q, gy - 30 - 80 * q, 26 + 14 * q, gk * math.sin(math.pi * q) * 0.9)
+        mk = win(t, t_loc, t_loc + 1.0) * (1 - smooth(win(t, t_cor + 0.5, t_cor + 1.5)))
+        if mk > 0:
+            pen.line(arc(inn_x - 20, ROAD_Y - 470, 30, math.radians(-60), math.radians(200), 20), 0.9, a * mk, seed=1610)
+            pen.line(arc(inn_x - 6, ROAD_Y - 476, 24, math.radians(-40), math.radians(170), 18), 0.8, a * mk, seed=1611)
+    # ---------------------------------------------------------------- the courier, the horses
+    two = 2 * math.pi
+    # courier screen position: rides in at 620, drifts to the station, hops onto the fresh horse, rides on
+    px_arr = lerp(-380, 620, ease_out(win(t, 0.5, 3.4), 2.2)) + 320 * smooth(win(t, t_dec, t_stop))
+    fresh_x0 = 940 + 330
+    out_ride = smooth(win(t, t_go, t_go + 1.0)) * 140 - smooth(win(t, t_go + 1.2, t_go + 5.0)) * (fresh_x0 + 140 - 700)
+    px_fresh = fresh_x0 + out_ride - 0  # fresh horse on screen (stationary in the world until t_go)
+    if t < t_go:
+        px_fresh = fresh_x0 - rel
+    # gait amplitudes
+    g1 = 1 - smooth(win(t, t_dec + 0.8, t_stop + 0.1))
+    g2 = smooth(win(t, t_go - 0.1, t_go + 0.9))
+    f_g = lambda gg: 0.6 + 1.6 * gg
+    ph1 = _gait_clock(t, lambda u: f_g(1 - smooth(win(u, t_dec + 0.8, t_stop + 0.1))))
+    ph2 = _gait_clock(t, lambda u: f_g(smooth(win(u, t_go - 0.1, t_go + 0.9))) if u > t_go - 0.5 else 0.6)
+    # phase C/D: the courier gallops off and the record carriage arrives
+    exit_c = ease_in(win(t, t_pli - 0.3, t_pli + 1.6), 2)
+    px_fresh += exit_c * 1500
+    ca = a * smooth(win(t, 0.5, 1.3))
+    # tired horse (stays at the station)
+    tired_x = 940 - max(0.0, rel) if t > t_stop else px_arr
+    hop = smooth(win(t, t_hop, t_hop + 0.7))
+    if tired_x > -400:
+        sx, sy, pt = horse(pen, tired_x, ROAD_Y, s_h, ph1, g1, t, ca, seed=1700,
+                           head_down=0.6 * smooth(win(t, t_hop + 0.4, t_hop + 1.4)),
+                           tired=smooth(win(t, t_stop, t_stop + 0.5)), saddle=True)
+        seat1 = (sx, sy, pt)
+    # the fresh horse waits, tied to the inn's post
+    if px_fresh < W + 400:
+        head_up = smooth(win(t, t_stop - 0.4, t_stop + 0.4))
+        sx2, sy2, pt2 = horse(pen, px_fresh, ROAD_Y, s_h, ph2, g2, t, ca * smooth(win(t, t_staz - 1.5, t_staz)) if t < t_go else ca,
+                              seed=1800, saddle=True)
+        seat2 = (sx2, sy2, pt2)
+    else:
+        seat2 = None
+    # the rider: on horse 1, a hop, then on horse 2
+    if t < t_pli + 1.8:
+        if hop <= 0:
+            rx, ry, rp = seat1
+            gal = g1
+        elif hop >= 1 and seat2:
+            rx, ry, rp = seat2
+            gal = g2
+        else:
+            ax_, ay_, _ = seat1
+            bx_, by_, _ = seat2 if seat2 else seat1
+            rx, ry = lerp(ax_, bx_, hop), lerp(ay_, by_, hop) - 150 * math.sin(math.pi * hop)
+            rp = -0.2 * math.sin(math.pi * hop)
+            gal = 0.0
+        hand = pulse(t, t_serv - 0.4, t_staz - 1.0, 0.5)
+        expr = "talk" if t_cp - 0.3 < t < t_cp + 1.2 else ("surprise" if 0 < hop < 1 else ("grin" if t_go < t < t_go + 1.6 else "determined"))
+        rider(pen, rx, ry, s_r, t, ca, lean=0.25 * gal + rp, expr=expr, hold="scroll", gallop=gal, hand_up=hand, seed=1900)
+    # ---------------------------------------------------------------- labels
+    k = win(t, t_cp - 0.2, t_cp + 1.0)
+    fo = 1 - smooth(win(t, t_staz - 1.2, t_staz - 0.4))
+    if k > 0 and fo > 0:
+        pen.text("cursus publicus", 960, 170, 84, a * fo, reveal=k)
+        pen.text("messaggi · funzionari", 960, 236, 42, 0.7 * a * fo, reveal=win(t, t_serv + 0.6, t_serv + 1.6))
+    if t > t_cor - 0.5:
+        k = win(t, t_cor, t_cor + 1.0) * (1 - smooth(win(t, t_pli - 0.4, t_pli + 0.4)))
+        if k > 0:
+            n = int(lerp(10, 50, ease_io(win(t, t_cor + 0.3, t_50 + 1.8))))
+            pen.text(f"≈ {n}", 860, 200, 110, a * k, align="right")
+            pen.text("miglia al giorno", 890, 200, 54, a * k, align="left")
+            pen.text("≈ 75 km", 960, 262, 38, 0.6 * a * k)
+            # passing milestones: one per mile
+            ms = []
+            for j in range(6):
+                x = (j * 420 - scroll * 1.0) % 2520 - 300
+                g = ROAD_Y
+                ms += [[(x - 16, g), (x - 16, g - 70), (x + 16, g - 70), (x + 16, g)], ellipse(x, g - 70, 16, 5, 12)]
+            pen.lines(ms, k, 0.0, 0.6 * a * k, 0.8, seed=1950)
+    # ---------------------------------------------------------------- the record: Tiberius's dash
+    k = win(t, t_pli - 0.2, t_pli + 0.9) * (1 - smooth(win(t, t_200 - 1.0, t_200 - 0.2)))
+    if k > 0:
+        pen.text("un record, raccontato da Plinio il Vecchio", 960, 118, 46, 0.75 * a * k, reveal=k)
+    cin = ease_out(win(t, t_pli + 0.4, t_tib + 0.6), 2.5)
+    if cin > 0:
+        cx_ = lerp(-500, 760, cin)
+        gy = ground(cx_)
+        slope = math.atan2(ground(cx_ + 30) - ground(cx_ - 30), 60)
+        ph3 = t * 2.4
+        car = a * smooth(win(t, t_pli + 0.4, t_pli + 1.0))
+        with at(pen, cx_, gy, 1.0, slope):
+            # light two-wheeled carriage (cisium) behind the horse
+            wx, wy, wr = -230, -56, 56
+            spin = -scroll / wr
+            pen.line(ellipse(wx, wy, wr, wr, 36), 1.05, car, seed=2000)
+            pen.line(ellipse(wx, wy, wr * 0.8, wr * 0.8, 30), 0.6, car * 0.6, seed=2001)
+            pen.lines([[(wx + math.cos(spin + k_ * math.pi / 4) * 8, wy + math.sin(spin + k_ * math.pi / 4) * 8),
+                        (wx + math.cos(spin + k_ * math.pi / 4) * wr * 0.8, wy + math.sin(spin + k_ * math.pi / 4) * wr * 0.8)]
+                       for k_ in range(8)], 1.0, 0.0, car * 0.8, 0.7, seed=2002)
+            body = [(-296, -112), (-290, -80), (-176, -78), (-160, -96), (-152, -132), (-164, -150)]
+            pen.line(body, 1.05, car, seed=2003)
+            pen.line([(-296, -112), (-176, -112)], 0.7, car * 0.8, seed=2004)
+            pen.line([(-170, -92), (-60, -112), (40, -128)], 0.9, car, seed=2005)        # shaft
+            # dust and speed lines
+            for j in range(4):
+                q = (t * 1.6 + j / 4) % 1
+                pen.line(ellipse(wx - 60 - 120 * q, -6 - 14 * q, 8 + 14 * q, 5 + 8 * q, 12), 0.6, car * (1 - q) * 0.6,
+                         seed=2010 + j)
+            sl = [[(-340 - j * 40, -200 + j * 46), (-520 - j * 40, -200 + j * 46)] for j in range(4)]
+            pen.lines(sl, 1.0, 0.0, 0.45 * car, 0.6, seed=2020)
+        hx3 = cx_ + 40
+        sx3, sy3, pt3 = horse(pen, hx3, ground(hx3), 0.88, ph3, 1.0, t, car, seed=2100, saddle=False)
+        # Tiberius on the seat
+        dx, dy = rot((-212, -128), slope)
+        rider(pen, cx_ + dx, gy + dy, 0.82, t, car, lean=0.3 + slope, expr="determined", legs="cart", gallop=1.0,
+              hat=False, crown=True, seed=2200)
+        lk = win(t, t_tib - 0.2, t_tib + 0.8)
+        if lk > 0:
+            pen.text("Tiberio", cx_ + dx, gy + dy - 230, 46, a * lk, reveal=lk)
+            pen.text("9 a.C.", cx_ + dx, gy + dy - 192, 32, 0.6 * a * lk, reveal=win(t, t_tib + 0.4, t_tib + 1.2))
+        # where he is going
+        gk = win(t, t_ger - 0.3, t_ger + 0.7)
+        if gk > 0:
+            gx = 1620
+            gyy = ground(gx)
+            pen.lines([[(gx, gyy), (gx, gyy - 150)], [(gx - 10, gyy - 140), (gx + 150, gyy - 140), (gx + 176, gyy - 118),
+                                                         (gx + 150, gyy - 96), (gx - 10, gyy - 96), (gx - 10, gyy - 140)]],
+                      gk, vanish, a, 0.9, seed=2300, smooth_=False)
+            pen.text("Germania", gx + 78, gyy - 108, 32, a * gk)
+            pen.text("dal fratello Druso", gx + 78, gyy - 168, 30, 0.6 * a * gk, reveal=win(t, t_ger + 0.2, t_ger + 1.0))
+        rk = win(t, t_200 - 0.1, t_200 + 1.0)
+        if rk > 0:
+            pen.text("200 miglia · un giorno e una notte", 960, 120, 64, a, reveal=rk)
+            pen.text("≈ 300 km", 960, 172, 38, 0.6 * a, reveal=win(t, t_notte, t_notte + 0.8))
     return road

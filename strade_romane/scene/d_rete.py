@@ -12,8 +12,7 @@ import cairo
 import numpy as np
 
 from motore.film import scena
-from motore.linea import (H, W, arc, at, back, catmull, clamp, ease_in, ease_io, ease_out, ellipse, lerp, lerp2, morph,
-                          resample, smooth, wave, win)
+from motore.linea import H, W, arc, at, back, catmull, clamp, ease_io, ellipse, lerp, morph, resample, smooth, win
 from motore.omino import DOWN, omino
 from motore.personaggi import mulo
 
@@ -125,15 +124,7 @@ def coste(pen, v, reveal=1.0, start=0.0, alpha=0.5, w=0.7, seed=500):
         if bb[2] < lo0 or bb[0] > lo1 or bb[3] < la0 or bb[1] > la1:
             continue
         for r in runs_inside(v.arr(c)):
-            pen.line(r.tolist(), w, alpha, reveal, start, smooth_=False, seed=seed + i)
-
-
-def frac_along(ll):
-    """Cumulative length fraction at each vertex of a lon/lat polyline (in projected units)."""
-    d = [0.0]
-    for (a, b), (c, e) in zip(ll, ll[1:]):
-        d.append(d[-1] + math.hypot((c - a) * C42, e - b))
-    return [x / d[-1] for x in d]
+            pen.line(r.tolist(), w, alpha, reveal, start, smooth_=False, seed=seed + i, step=5.0)
 
 
 def dashed(pen, pts, alpha, reveal, start, w=0.8, dash=14, gap=10, seed=0):
@@ -430,7 +421,7 @@ def tabula(pen, t, T, appear, vanish):
         return ROAD_Y + 6 * math.sin(x / 260.0)
 
     # ---------------------------------------------------------------- part 1: the procession
-    gone = smooth(win(t, 11.5, 12.9))           # procession fades
+    gone = smooth(win(t, 11.4, 12.6))           # procession fades
     if gone < 1:
         al = a * (1 - gone)
         v = 104.0
@@ -442,28 +433,28 @@ def tabula(pen, t, T, appear, vanish):
         xm = xt - 330
         # the soldier
         x = xs(1120)
-        omino(pen, x, gy(x), 0.95, t, "legionario", walk=1.0, expr="determined", alpha=al * smooth(win(t, 0.2, 1.4)),
+        omino(pen, x, gy(x), 0.95, t, "legionario", walk=1.0, expr="determined", alpha=al * smooth(win(t, 0.9, 1.9)),
               seed=3)
         # the merchant pulling his cart (cart behind him)
         x = xs(680)
-        ka = al * smooth(win(t, 0.3, 1.5))
+        ka = al * smooth(win(t, 1.0, 2.0))
         carretto(pen, x - 236, gy(x - 236), ka, 1.0, 0.0, t, seed=710)
         omino(pen, x, gy(x), 0.92, t, "operaio", walk=1.0, lean=0.2, expr="smile", alpha=ka,
               arm_b=(DOWN + 0.75, DOWN + 0.95), seed=5, talk=5.0 < t < 6.6)
         fumetto(pen, x + 60, gy(x) - 350, win(t, 5.2, 5.8) * (1 - win(t, 7.6, 8.0)), al, "news", t, 720)
         # the pilgrim, with a staff
         x = xs(160)
-        omino(pen, x, gy(x), 0.9, t, "agrimensore", walk=1.0, expr="calm", alpha=al * smooth(win(t, 0.4, 1.6)),
+        omino(pen, x, gy(x), 0.9, t, "agrimensore", walk=1.0, expr="calm", alpha=al * smooth(win(t, 1.1, 2.1)),
               hold="staff", seed=7)
         fumetto(pen, x + 70, gy(x) - 340, win(t, 5.9, 6.5) * (1 - win(t, 7.8, 8.2)), al, "idea", t, 730)
         # the traveller and the mule
         read = smooth(win(t, 9.2, 9.8))
         mulo(pen, xm, gy(xm), 0.95, t, walk=wt, ear=0.2 + 0.7 * smooth(win(t, 10.2, 10.8)),
-             alpha=al * smooth(win(t, 0.5, 1.7)))
+             alpha=al * smooth(win(t, 1.2, 2.2)))
         omino(pen, xt, gy(xt), 1.05, t, "viandante", walk=wt, expr="squint" if read > 0.5 else "calm",
               look=0.4 * read, head_tilt=-0.12 * read,
               arm_f=(lerp(DOWN - 0.35, -0.1, read), lerp(0.4, -0.5, read)) if read > 0.01 else None,
-              hold="scroll" if read > 0.5 else "staff", alpha=al * smooth(win(t, 0.5, 1.7)), seed=2)
+              hold="scroll" if read > 0.5 else "staff", alpha=al * smooth(win(t, 1.2, 2.2)), seed=2)
         # the itinerary: a list of stops and distances, written on cue
         if t > 9.3:
             kc = ease_io(win(t, 9.3, 10.0))
@@ -484,12 +475,12 @@ def tabula(pen, t, T, appear, vanish):
                 if mp:
                     pen.text(mp, cx + 356, yy, 34, al * 0.9, align="right", reveal=win(t, tj + 0.25, tj + 0.6))
     # ---------------------------------------------------------------- part 2: the Tabula
-    unroll = ease_io(win(t, 13.6, 17.0))
+    unroll = ease_io(win(t, 12.9, 16.4))
     xl = lerp(SC_R - 34, SC_L, unroll)
-    if t > 12.3:
-        kk = win(t, 12.3, 13.3)
+    if t > 11.8:
+        kk = win(t, 11.8, 12.8)
         rullo(pen, SC_R, SC_T, SC_B, kk, vanish, a, 760)
-        rullo(pen, xl, SC_T, SC_B, win(t, 12.8, 13.6), vanish, a, 770)
+        rullo(pen, xl, SC_T, SC_B, win(t, 12.2, 13.0), vanish, a, 770)
         if unroll > 0.001:
             pen.line([(xl + 13, SC_T), (SC_R - 13, SC_T)], 1.0, a, 1.0, vanish, seed=780)
             pen.line([(xl + 13, SC_B), (SC_R - 13, SC_B)], 1.0, a, 1.0, vanish, seed=781)
@@ -501,14 +492,14 @@ def tabula(pen, t, T, appear, vanish):
             pen.lines(ROT_BIG, 1.0, vanish, 0.85 * a, 0.8, seed=800)
             pen.lines(ROT_LIGHT, 1.0, vanish, 0.5 * a, 0.65, seed=820)
             for j, (x, y) in enumerate(ROT_TOWNS):
-                tj = 13.6 + 3.4 * (1 - (x - SC_L) / (SC_R - SC_L)) ** 1.3
+                tj = 12.9 + 3.4 * (1 - (x - SC_L) / (SC_R - SC_L)) ** 1.3
                 pen.lines(torri(x, y, 0.85), win(t, tj, tj + 0.6), vanish, 0.85 * a, 0.75, seed=840 + j)
-            pen.lines(ROT_ROMA, win(t, 15.4, 16.4), vanish, a, 0.9, seed=870)
+            pen.lines(ROT_ROMA, win(t, 14.8, 15.8), vanish, a, 0.9, seed=870)
             ctx.restore()
         # the medieval copyist (right), at a little desk with an inkpot
-        km = smooth(win(t, 14.0, 15.2))
+        km = smooth(win(t, 13.4, 14.6))
         floor = 902
-        pen.lines([[(1420, floor + 2), (1760, floor + 2)]], win(t, 14.0, 15.2), vanish, 0.5 * a, 0.8, seed=880)
+        pen.lines([[(1420, floor + 2), (1760, floor + 2)]], win(t, 13.4, 14.6), vanish, 0.5 * a, 0.8, seed=880)
         wri = math.sin(t * 6.0) * 0.1 * (1 - smooth(win(t, 21.5, 22.2)))
         look_up = smooth(win(t, 21.6, 22.4))
         omino(pen, 1572, floor, 1.25, t, "monaco", fx=-1, alpha=a * km,
@@ -532,7 +523,7 @@ def tabula(pen, t, T, appear, vanish):
         if t > 22.4:
             pen.text("oggi a Vienna", mid, 292, 38, 0.8 * a, reveal=win(t, 22.4, 23.3))
     # ---------------------------------------------------------------- the road: ground -> reeled in -> unrolled
-    lift = ease_io(win(t, 12.0, 13.6))
+    lift = ease_io(win(t, 11.5, 12.9))
     if lift <= 0:
         return ground
     if unroll <= 0:
@@ -541,20 +532,22 @@ def tabula(pen, t, T, appear, vanish):
 
 
 # =====================================================================================  b12 ponti
-# world coordinates: road deck at y = 0; bridge centred at x = 0; the Furlo rock to the right
+# World coordinates: the road (deck) at y = 0; the bridge centred at x = 0; the Furlo cliff to the right.
+# Scale of the bridge ≈ 21 px per metre (spans ≈ 9-11 m); the tunnel uses the same scale (38 m ≈ 800 px).
 SPANS = [196, 214, 232, 214, 196]
 PIER = 66
 SPRING = 210        # springing line of the arches
 WATER = 262
 B_L = -(sum(SPANS) + PIER * 4) / 2 - 60
 B_R = -B_L
-PORTAL_X = 1640     # tunnel mouth (left edge)
-TUN_L = 800         # tunnel length in world px (≈ 38 m at ~21 px/m, the bridge's scale)
+PORTAL_X = 1640     # tunnel mouth (left jamb)
+PORTAL_W = 130
+TUN_L = 800         # tunnel length in world px (≈ 38 m)
 
 
 def _arches():
     out, x = [], B_L + 60
-    for i, s in enumerate(SPANS):
+    for s in SPANS:
         out.append((x, x + s))
         x += s + PIER
     return out
@@ -565,42 +558,36 @@ ARCHES = _arches()
 
 def ponte_strokes():
     main, detail, faint = [], [], []
-    # parapet and cornice
-    main.append([(B_L - 20, -40), (B_R + 20, -40)])
-    main.append([(B_L - 20, -40), (B_L - 26, 0)])
-    main.append([(B_R + 20, -40), (B_R + 26, 0)])
-    detail.append([(B_L, 18), (B_R, 18)])
+    # coping and cornice under the road (the road line itself is the top of the bridge)
+    detail.append([(B_L - 10, 12), (B_R + 10, 12)])
+    detail.append([(B_L + 4, 30), (B_R - 4, 30)])
     # arches and piers
-    prev = B_L - 40
     for i, (x0, x1) in enumerate(ARCHES):
         r = (x1 - x0) / 2
         cx = x0 + r
         main.append([(x0, WATER + 8), (x0, SPRING)] + arc(cx, SPRING, r, math.pi, 2 * math.pi, 26) + [(x1, WATER + 8)])
-        # voussoirs: an outer ring and radial joints
-        detail.append(arc(cx, SPRING, r + 22, math.pi, 2 * math.pi, 26))
+        detail.append(arc(cx, SPRING, r + 22, math.pi * 1.02, math.pi * 1.98, 26))
         for j in range(1, 12):
             ang = math.pi + j * math.pi / 12
             detail.append([(cx + math.cos(ang) * r, SPRING + math.sin(ang) * r),
                            (cx + math.cos(ang) * (r + 22), SPRING + math.sin(ang) * (r + 22))])
-        prev = x1
     # cutwaters at the piers and the little aediculae (niches with a pediment) above them
     for i in range(4):
-        px0 = ARCHES[i][1]
-        px1 = ARCHES[i + 1][0]
+        px0, px1 = ARCHES[i][1], ARCHES[i + 1][0]
         pc = (px0 + px1) / 2
-        detail.append([(px0 + 4, WATER - 4), (pc, WATER - 30), (px1 - 4, WATER - 4)])
-        ny = 70
-        detail.append([(pc - 20, ny + 66), (pc - 20, ny + 12), (pc + 20, ny + 12), (pc + 20, ny + 66), (pc - 20, ny + 66)])
-        detail.append([(pc - 28, ny + 12), (pc, ny - 8), (pc + 28, ny + 12), (pc - 28, ny + 12)])
-        detail.append([(pc - 24, ny + 72), (pc + 24, ny + 72)])
+        detail.append([(px0 + 4, WATER - 2), (pc, WATER - 28), (px1 - 4, WATER - 2)])
+        ny = 74
+        detail.append([(pc - 19, ny + 64), (pc - 19, ny + 12), (pc + 19, ny + 12), (pc + 19, ny + 64), (pc - 19, ny + 64)])
+        detail.append([(pc - 27, ny + 12), (pc, ny - 7), (pc + 27, ny + 12), (pc - 27, ny + 12)])
+        detail.append([(pc - 23, ny + 70), (pc + 23, ny + 70)])
     # abutments down to the banks
-    main.append([(B_L - 26, 0), (B_L - 10, 120), (B_L + 60, WATER + 8)])
-    main.append([(B_R + 26, 0), (B_R + 10, 120), (B_R - 60, WATER + 8)])
+    main.append([(B_L - 10, 0), (B_L - 4, 120), (B_L + 60, WATER + 8)])
+    main.append([(B_R + 10, 0), (B_R + 4, 120), (B_R - 60, WATER + 8)])
     # a few stone courses on the spandrels
     rng = random.Random(4)
-    for k in range(16):
+    for k in range(18):
         x = rng.uniform(B_L + 80, B_R - 80)
-        y = rng.uniform(32, 70)
+        y = rng.uniform(40, 66)
         faint.append([(x, y), (x + rng.uniform(26, 50), y)])
     return main, detail, faint
 
@@ -609,26 +596,52 @@ P_MAIN, P_DETAIL, P_FAINT = ponte_strokes()
 
 
 def roccia_strokes():
+    """The Furlo cliff: a near rock face with the tunnel at its foot, strata, the far wall of the gorge."""
+    rng = random.Random(76)
     main, detail, far = [], [], []
-    # the front rock spur the tunnel goes through, with the road ledge at y = 0
-    face = [(1290, 300), (1350, 150), (1420, 60), (1470, -30), (1540, -110), (1600, -260), (1700, -420),
-            (1830, -560), (1990, -640), (2150, -600), (2300, -500), (2440, -420), (2600, -440), (2800, -560),
-            (3000, -620), (3200, -560)]
-    main.append(face)
-    # cliff below the road down to the river
-    main.append([(1300, 30), (1340, 140), (1320, 240), (1360, 300)])
-    main.append([(1300, 30), (3300, 30)])
-    # strata in the limestone (diagonal bands)
-    for k in range(9):
-        x0 = 1700 + k * 150
-        detail.append([(x0, -60 - (k % 3) * 40), (x0 + 120, -260 - (k % 3) * 40), (x0 + 210, -420)])
-    for k in range(6):
-        x0 = 1450 + k * 280
-        detail.append([(x0, 90), (x0 + 140, 70), (x0 + 260, 110)])
-    # the far wall of the gorge (fainter, behind)
-    far.append([(1180, 300), (1220, -200), (1320, -560), (1450, -780), (1620, -840), (1800, -800), (1980, -900),
-                (2200, -880), (2400, -760), (2700, -820), (3100, -760)])
-    far.append([(1260, -260), (1360, -500), (1500, -640)])
+    face = [(1612, 0), (1598, -70), (1572, -128), (1588, -200), (1552, -290), (1568, -360), (1530, -452),
+            (1550, -530), (1506, -612), (1522, -690), (1482, -780), (1560, -832), (1640, -850), (1720, -906),
+            (1820, -890), (1900, -942), (2000, -926), (2120, -982), (2260, -962), (2400, -1012), (2600, -990),
+            (2900, -1042), (3300, -1000)]
+    main.append({"p": face, "smooth": False})
+    # below the road: the cliff drops to the river
+    main.append({"p": [(1612, 22), (1594, 90), (1622, 168), (1604, 246), (1640, 330)], "smooth": False})
+    # retaining wall of the road ledge, left of the cliff
+    main.append([(1040, 22), (1612, 22)])
+    detail.append([(1050, 22), (1080, 120), (1150, 230), (1200, 330)])
+    detail.append([(1080, 56), (1604, 56)])
+    # limestone beds: short broken lines roughly parallel, sloping gently
+    for row in range(8):
+        y0 = -110 - row * 92
+        x = 1620 - row * 8 + rng.uniform(0, 40)
+        while x < 3000:
+            L = rng.uniform(90, 260)
+            y = y0 + (x - 1600) * -0.12
+            mx_ = x + L / 2
+            in_label = 1740 < mx_ < 2560 and -600 < y < -230
+            if y > -980 - (x - 1600) * 0.05 and not in_label and \
+                    not (PORTAL_X - 30 < x + L and x < PORTAL_X + PORTAL_W + 40 and y > -200):
+                detail.append([(x, y), (x + L * 0.5, y - L * 0.06 + rng.uniform(-4, 4)), (x + L, y - L * 0.12)])
+            x += L + rng.uniform(40, 140)
+    # cracks
+    for x0, y0 in ((1700, -380), (2050, -600), (2330, -260), (2700, -480)):
+        detail.append({"p": [(x0, y0), (x0 + 12, y0 + 50), (x0 - 4, y0 + 96), (x0 + 10, y0 + 140)], "smooth": False})
+    # little shrubs on the ledges of the face
+    for x0, y0 in ((1590, -200), (1556, -455), (1525, -690), (1700, -900), (2130, -982)):
+        detail.append([(x0, y0), (x0 + 6, y0 - 22)])
+        detail.append([(x0 + 4, y0), (x0 + 18, y0 - 16)])
+        detail.append([(x0 - 2, y0), (x0 - 12, y0 - 14)])
+    # the far wall of the gorge, behind
+    far.append({"p": [(940, 6), (990, -60), (1060, -80), (1100, -190), (1180, -210), (1220, -330), (1300, -350),
+                      (1330, -480), (1400, -500), (1430, -640), (1480, -660)], "smooth": False})
+    far.append({"p": [(1000, -40), (1040, -10)], "smooth": False})
+    far.append({"p": [(1120, -170), (1160, -140)], "smooth": False})
+    far.append({"p": [(1250, -320), (1290, -290)], "smooth": False})
+    # lower rock under the road ledge, down to the river
+    for row in range(3):
+        y = 90 + row * 80
+        detail.append([(1660 + row * 30, y), (1900 + row * 40, y - 12), (2140, y - 20)])
+        detail.append([(2300 + row * 60, y - 26), (2600, y - 40)])
     return main, detail, far
 
 
@@ -636,23 +649,25 @@ R_MAIN, R_DETAIL, R_FAR = roccia_strokes()
 
 
 def portale():
-    x0, x1, top = PORTAL_X, PORTAL_X + 120, -128
-    cx = (x0 + x1) / 2
-    outer = [(x0 - 18, 0), (x0 - 18, top + 20)] + arc(cx, top + 20, (x1 - x0) / 2 + 18, math.pi, 2 * math.pi, 20) + \
-            [(x1 + 18, top + 20), (x1 + 18, 0)]
-    inner = [(x0, 0), (x0, top + 32)] + arc(cx, top + 32, (x1 - x0) / 2, math.pi, 2 * math.pi, 20) + [(x1, top + 32), (x1, 0)]
-    deep = [(x0 + 22, 0), (x0 + 22, top + 52)] + arc(cx, top + 52, (x1 - x0) / 2 - 22, math.pi, 2 * math.pi, 16) + \
-           [(x1 - 22, top + 52), (x1 - 22, 0)]
-    return outer, inner, deep
+    x0, x1, top = PORTAL_X, PORTAL_X + PORTAL_W, -150
+    cx, r = (x0 + x1) / 2, PORTAL_W / 2
+    outer = [(x0 - 20, 0), (x0 - 20, top + r)] + arc(cx, top + r, r + 20, math.pi, 2 * math.pi, 22) + \
+            [(x1 + 20, top + r), (x1 + 20, 0)]
+    inner = [(x0, 0), (x0, top + r)] + arc(cx, top + r, r, math.pi, 2 * math.pi, 22) + [(x1, top + r), (x1, 0)]
+    deep = [(x0 + 24, 0), (x0 + 24, top + r + 16)] + arc(cx, top + r + 16, r - 24, math.pi, 2 * math.pi, 16) + \
+           [(x1 - 24, top + r + 16), (x1 - 24, 0)]
+    deeper = [(x0 + 42, 0), (x0 + 42, top + r + 34)] + arc(cx, top + r + 34, r - 42, math.pi, 2 * math.pi, 12) + \
+             [(x1 - 42, top + r + 34), (x1 - 42, 0)]
+    return outer, inner, deep, deeper
 
 
 PORTALE = portale()
 
 
 def strada_ponti():
-    pts = [(-1500, 8), (-1150, 4), (B_L - 26, 0)]
-    pts += [(x, 0) for x in range(int(B_L), int(B_R) + 1, 120)]
-    pts += [(B_R + 26, 0), (1000, 2), (1300, 2), (PORTAL_X - 40, 0), (PORTAL_X + 30, 0)]
+    pts = [(-1600, 6), (-1200, 4), (B_L - 10, 0)]
+    pts += [(x, 0) for x in range(int(B_L) + 100, int(B_R), 140)]
+    pts += [(B_R + 10, 0), (1000, 0), (1300, 0), (PORTAL_X - 20, 0), (PORTAL_X + PORTAL_W / 2, 0)]
     return pts
 
 
@@ -660,45 +675,65 @@ STRADA_PONTI = strada_ponti()
 
 
 def cam_ponti(t):
-    """(world centre x, y, zoom)"""
-    A = (650.0, -240.0, 0.54)        # overview: bridge and mountain
-    B = (0.0, 40.0, 1.0)             # the bridge
-    C = (1820.0, -170.0, 0.86)       # the Furlo rock
+    """(world centre x, y, zoom): overview -> the bridge -> the Furlo cliff."""
+    A = (880.0, -190.0, 0.56)
+    B = (0.0, 60.0, 1.0)
+    C = (1900.0, -130.0, 0.84)
     u = ease_io(win(t, 7.0, 9.4))
     p = (lerp(A[0], B[0], u), lerp(A[1], B[1], u), math.exp(lerp(math.log(A[2]), math.log(B[2]), u)))
     u = ease_io(win(t, 14.2, 17.0))
     p = (lerp(p[0], C[0], u), lerp(p[1], C[1], u), math.exp(lerp(math.log(p[2]), math.log(C[2]), u)))
-    return p
+    d = smooth(win(t, 16.0, 27.5))              # a slow push towards the tunnel during the long hold
+    return (p[0] - 60 * d, p[1] + 20 * d, p[2] * (1 + 0.07 * d))
 
 
-def auto(pen, x, y, t, alpha, seed):
-    """A small modern car, side view, wheels turning; (x, y) = front-wheel contact point."""
-    body = [(x - 104, y - 14), (x - 106, y - 34), (x - 84, y - 40), (x - 62, y - 62), (x - 12, y - 64), (x + 12, y - 40),
-            (x + 34, y - 34), (x + 36, y - 16), (x + 28, y - 12)]
-    pen.line(body, 1.0, alpha, seed=seed)
-    pen.line([(x - 104, y - 14), (x - 92, y - 12)], 1.0, alpha, seed=seed + 1)
-    pen.line([(x - 52, y - 12), (x - 12, y - 12)], 1.0, alpha, seed=seed + 2)
-    pen.line([(x - 70, y - 40), (x - 56, y - 56), (x - 36, y - 57), (x - 36, y - 40), (x - 70, y - 40)], 0.7, alpha,
-             seed=seed + 3, smooth_=False)
-    pen.line([(x - 30, y - 57), (x - 14, y - 56), (x + 2, y - 40), (x - 30, y - 40), (x - 30, y - 57)], 0.7, alpha,
-             seed=seed + 4, smooth_=False)
-    for wx in (x - 72, x + 8 - 8):
-        pen.line(ellipse(wx, y - 12, 13, 13, 16), 1.0, alpha, seed=seed + 5)
-        a = -wx / 13.0
-        pen.line([(wx + math.cos(a) * 6, y - 12 + math.sin(a) * 6), (wx - math.cos(a) * 6, y - 12 - math.sin(a) * 6)],
-                 0.6, alpha, seed=seed + 6)
-    pen.dot(x + 32, y - 28, 3, alpha)
+def auto(pen, x, y, alpha, seed, s=1.25):
+    """A small round modern car, side view, wheels turning; (x, y) = point under the front bumper."""
+    with at(pen, x, y, s):
+        body = [(-110, -16), (-112, -36), (-90, -44), (-66, -70), (-14, -72), (10, -46), (34, -40), (38, -18),
+                (30, -12)]
+        pen.line(body, 1.0, alpha, seed=seed)
+        pen.line([(-110, -16), (-96, -12)], 1.0, alpha, seed=seed + 1)
+        pen.line([(-58, -12), (-16, -12)], 1.0, alpha, seed=seed + 2)
+        pen.line([(-74, -46), (-60, -62), (-40, -63), (-40, -46), (-74, -46)], 0.7, alpha, seed=seed + 3,
+                 smooth_=False)
+        pen.line([(-34, -63), (-16, -62), (0, -46), (-34, -46), (-34, -63)], 0.7, alpha, seed=seed + 4, smooth_=False)
+        for k, wx in enumerate((-77, 4)):
+            pen.line(ellipse(wx, -14, 14, 14, 16), 1.0, alpha, seed=seed + 5 + k, closed=True)
+            a = -(x + wx * s) / (14 * s)
+            pen.line([(wx + math.cos(a) * 7, -14 + math.sin(a) * 7), (wx - math.cos(a) * 7, -14 - math.sin(a) * 7)],
+                     0.6, alpha, seed=seed + 7)
+        pen.dot(36, -30, 3, alpha)
 
 
-def bici(pen, x, y, alpha, seed):
-    """A bicycle doodle, (x, y) = middle of the wheelbase on the ground."""
-    r = 30
-    wl, wr = (x - 58, y - r), (x + 58, y - r)
-    strokes = [ellipse(wl[0], wl[1], r, r, 22), ellipse(wr[0], wr[1], r, r, 22),
-               [wl, (x - 6, y - r), (x + 26, y - 70), (x - 20, y - 70), (x - 6, y - r)],
-               [(x + 26, y - 70), wr], [(x + 26, y - 70), (x + 30, y - 84), (x + 44, y - 88)],
-               [(x - 20, y - 70), (x - 24, y - 80)], [(x - 34, y - 82), (x - 12, y - 82)]]
-    pen.lines(strokes, 1.0, 0.0, alpha, 0.85, seed=seed)
+def bici(pen, x, y, alpha, seed, s=1.0):
+    """A bicycle doodle; (x, y) = middle of the wheelbase on the ground."""
+    with at(pen, x, y, s):
+        r = 30
+        wl, wr = (-58, -r), (58, -r)
+        strokes = [ellipse(wl[0], wl[1], r, r, 22), ellipse(wr[0], wr[1], r, r, 22),
+                   [wl, (-6, -r), (26, -70), (-20, -70), (-6, -r)],
+                   [(26, -70), wr], [(26, -70), (30, -84), (44, -88)],
+                   [(-20, -70), (-24, -80)], [(-34, -82), (-12, -82)]]
+        pen.lines(strokes, 1.0, 0.0, alpha, 0.85, seed=seed)
+
+
+def cane(pen, x, y, t, alpha, seed, s=1.0):
+    """A small trotting dog with a wagging tail; (x, y) = feet, facing right."""
+    with at(pen, x, y, s):
+        ph = t * 2 * math.pi * 1.6
+        b = -abs(math.sin(ph)) * 3
+        pen.line([(-30, -34 + b), (-6, -38 + b), (18, -36 + b), (24, -26 + b), (-26, -22 + b), (-30, -34 + b)], 0.9, alpha,
+                 seed=seed)
+        pen.line([(18, -36 + b), (24, -52 + b), (40, -54 + b), (46, -46 + b), (34, -38 + b), (24, -34 + b)], 0.9, alpha,
+                 seed=seed + 1)
+        pen.line([(26, -52 + b), (22, -62 + b), (32, -56 + b)], 0.7, alpha, seed=seed + 2)
+        pen.dot(36, -48 + b, 1.8, alpha)
+        wag = math.sin(t * 14) * 8
+        pen.line([(-30, -32 + b), (-42, -44 + b + wag * 0.3), (-46 + wag * 0.4, -54 + b)], 0.8, alpha, seed=seed + 3)
+        for k, (lx, p0) in enumerate(((-22, 0.0), (-14, math.pi), (10, math.pi), (18, 0.0))):
+            sw = math.sin(ph + p0) * 7
+            pen.line([(lx, -24 + b), (lx + sw, 0)], 0.8, alpha, seed=seed + 4 + k)
 
 
 @scena("ponti")
@@ -711,102 +746,99 @@ def ponti(pen, t, T, appear, vanish):
         return (ox + p[0] * z, oy + p[1] * z)
 
     with at(pen, ox, oy, z):
-        # the river: banks and flowing ripples
+        # ---- the river under the bridge: banks, flowing ripples, broken reflections
         kb = win(t, 0.2, 2.2)
-        pen.lines([[(-1700, WATER + 30), (-1180, WATER + 34), (-900, WATER + 10), (-780, WATER + 12)],
-                   [(780, WATER + 12), (980, WATER + 30), (1240, WATER + 44)]], kb, vanish, 0.6, 0.8, seed=900)
+        pen.lines([[(-1800, WATER + 40), (-1300, WATER + 36), (-940, WATER + 14), (B_L + 40, WATER + 10)],
+                   [(B_R - 40, WATER + 10), (900, WATER + 26), (1060, WATER + 60)]], kb, vanish, 0.55, 0.8, seed=900)
         rng = random.Random(7)
         rip = []
         for i in range(26):
-            x0 = rng.uniform(-860, 860)
-            y0 = WATER + rng.uniform(18, 120)
+            x0 = rng.uniform(-900, 900)
+            y0 = WATER + rng.uniform(22, 130)
             ph = rng.uniform(0, 6.28)
-            dx = (t * 26 + x0 + 400) % 1720 - 860
-            L = 40 + 20 * math.sin(t * 1.3 + ph)
+            dx = (t * 24 + x0 + 900) % 1800 - 900
+            L = 40 + 18 * math.sin(t * 1.3 + ph)
             rip.append([(dx, y0), (dx + L * 0.5, y0 - 3), (dx + L, y0)])
-        pen.lines(rip, win(t, 0.6, 2.6), vanish, 0.38, 0.6, seed=905)
-        # reflections of the arches, broken and shimmering
+        pen.lines(rip, win(t, 0.6, 2.6), vanish, 0.36, 0.6, seed=905)
         refl = []
         for i, (x0, x1) in enumerate(ARCHES):
             r = (x1 - x0) / 2
             c = x0 + r
             for j in range(4):
-                yy = WATER + 18 + j * 16
-                hw = r * (0.9 - j * 0.18) + 6 * math.sin(t * 2 + i + j)
+                yy = WATER + 20 + j * 17
+                hw = r * (0.92 - j * 0.18) + 6 * math.sin(t * 2 + i + j)
                 refl.append([(c - hw, yy), (c - hw * 0.4, yy + 1)])
                 refl.append([(c + hw * 0.4, yy + 1), (c + hw, yy)])
-        pen.lines(refl, win(t, 1.6, 3.4), vanish, 0.22, 0.6, seed=910)
-        # the bridge
-        kp = win(t, 0.4, 3.6)
-        pen.lines(P_MAIN, kp, vanish, 1.0, 1.0, seed=920)
+        pen.lines(refl, win(t, 1.6, 3.4), vanish, 0.2, 0.6, seed=910)
+        # ---- the bridge
+        pen.lines(P_MAIN, win(t, 0.4, 3.4), vanish, 1.0, 1.0, seed=920)
         pen.lines(P_DETAIL, win(t, 2.0, 9.6), vanish, 0.7, 0.75, seed=930)
         pen.lines(P_FAINT, win(t, 8.0, 10.0), vanish, 0.35, 0.6, seed=950)
-        # the mountain, the gorge and the tunnel
-        km = win(t, 3.6, 6.4)
-        pen.lines(R_FAR, km, vanish, 0.35, 0.8, seed=960)
+        # ---- the cliff, the gorge, the tunnel
+        km = win(t, 3.4, 6.2)
+        pen.lines(R_FAR, km, vanish, 0.3, 0.8, seed=960)
         pen.lines(R_MAIN, km, vanish, 0.95, 1.0, seed=970)
-        pen.lines(R_DETAIL, win(t, 5.0, 8.0), vanish, 0.45, 0.65, seed=980)
-        kt = win(t, 5.0, 7.0)
+        pen.lines(R_DETAIL, win(t, 4.6, 8.0), vanish, 0.42, 0.65, seed=980)
+        kt = win(t, 4.8, 6.8)
         pen.lines([PORTALE[0], PORTALE[1]], kt, vanish, 1.0, 1.0, seed=990)
-        pen.lines([PORTALE[2]], kt, vanish, 0.45, 0.7, seed=993)
-        # river at the bottom of the gorge
+        pen.lines([PORTALE[2], PORTALE[3]], kt, vanish, 0.4, 0.7, seed=993)
         rip2 = []
-        for i in range(14):
-            x0 = 1420 + ((i * 197 + t * 22) % 1800)
-            y0 = 330 + (i * 37) % 120
+        pen.lines([[(1250, 350), (1650, 344), (2400, 350), (3200, 346)]], win(t, 3.8, 5.8), vanish, 0.45, 0.8, seed=994)
+        for i in range(16):
+            x0 = 1250 + ((i * 197 + t * 22) % 2000)
+            y0 = 380 + (i * 37) % 90
             rip2.append([(x0, y0), (x0 + 26, y0 - 2), (x0 + 52, y0)])
-        pen.lines(rip2, win(t, 4.0, 6.0), vanish, 0.32, 0.6, seed=995)
-        # the tunnel, as a dashed line through the rock, and its length
+        pen.lines(rip2, win(t, 3.8, 5.8), vanish, 0.3, 0.6, seed=995)
+        # ---- the tunnel through the rock, and its length
         if t > 20.4:
             k = ease_io(win(t, 20.4, 21.8))
-            dashed(pen, [(PORTAL_X + 60, -40), (PORTAL_X + 60 + TUN_L, -40)], 0.6 * a, k, vanish, 0.7, 16, 12, seed=1000)
-            yy = -250
-            pen.line([(PORTAL_X + 60, yy), (PORTAL_X + 60 + TUN_L * k, yy)], 0.8, 0.85 * a, 1.0, vanish, seed=1010)
-            if k > 0.95:
-                for xx, sg in ((PORTAL_X + 60, 1), (PORTAL_X + 60 + TUN_L, -1)):
-                    pen.line([(xx + 18 * sg, yy - 12), (xx, yy), (xx + 18 * sg, yy + 12)], 0.8, 0.85 * a, seed=1011)
-                    pen.line([(xx, yy - 18), (xx, yy + 18)], 0.6, 0.6 * a, seed=1012)
-        # people today crossing the bridge: someone walking a bicycle
-        if 10.6 < t < 19.0:
-            kx = win(t, 11.0, 18.5)
-            px = lerp(B_L + 120, B_R - 40, kx)
-            al = a * smooth(win(t, 10.6, 11.4))
-            bici(pen, px + 120, -2, al, 1020)
-            omino(pen, px, 0, 0.62, t, "moderno", walk=1.0, speed=0.8, expr="smile", alpha=al,
-                  arm_f=(-0.05, 0.25), seed=11)
-        # the car driving into the tunnel
+            x0, x1 = PORTAL_X + PORTAL_W / 2, PORTAL_X + TUN_L
+            dashed(pen, [(x0, -60), (x1, -60)], 0.55 * a, k, vanish, 0.7, 16, 12, seed=1000)
+            yy = -300
+            pen.line([(x0, yy), (lerp(x0, x1, k), yy)], 0.8, 0.85 * a, 1.0, vanish, seed=1010)
+            ke = win(t, 21.6, 21.9)
+            for xx, sg in ((x0, 1), (x1, -1)):
+                pen.line([(xx + 18 * sg, yy - 12), (xx, yy), (xx + 18 * sg, yy + 12)], 0.8, 0.85 * a, ke, vanish,
+                         seed=1011)
+                pen.line([(xx, yy + 20), (xx, yy + 200)], 0.5, 0.35 * a, ke, vanish, seed=1012)
+        # ---- today: someone walking a bicycle across the bridge, a dog trotting along
+        if 10.4 < t < 19.0:
+            kx = win(t, 10.6, 19.0)
+            px = lerp(B_L + 40, B_R + 120, kx)
+            al = a * smooth(win(t, 10.4, 11.2))
+            bici(pen, px + 84, -1, al, 1020, 0.72)
+            omino(pen, px, 0, 0.44, t, "moderno", walk=1.0, speed=0.9, expr="smile", alpha=al,
+                  arm_f=(-0.1, 0.15), seed=11)
+            cane(pen, px - 90, 0, t, al, 1040, 0.9)
+        # ---- the car driving into the tunnel
         if t > 22.2:
-            u = ease_in(win(t, 22.4, 25.6), 1.6)
-            x = lerp(1000, PORTAL_X + 260, u)
+            u = win(t, 22.3, 25.8)
+            x = lerp(760, PORTAL_X + 300, u * (0.4 + 0.6 * u))
             ctx = pen.ctx
             ctx.save()
-            ctx.rectangle(-5000, -2000, PORTAL_X + 50 + 5000, 4000)
+            ctx.rectangle(-5000, -2000, PORTAL_X + PORTAL_W + 5000, 4000)
             ctx.clip()
-            auto(pen, x, 0, t, a * smooth(win(t, 22.2, 22.8)), 1030)
+            inside = smooth(win(x, PORTAL_X + 20, PORTAL_X + 160))
+            auto(pen, x, 0, a * smooth(win(t, 22.2, 22.8)) * (1 - 0.65 * inside), 1030)
             ctx.restore()
-            # headlight glow moving inside the tunnel
-            if PORTAL_X + 50 < x:
-                g = win(x, PORTAL_X + 50, PORTAL_X + 250)
-                pen.dot(x + 34, -28, 3.0, 0.5 * a * (1 - g * 0.5))
-    # labels (screen space)
+    # ---- labels (screen space)
     if t > 7.8:
-        p = S((0, -150))
-        pen.text("Ponte di Tiberio", p[0], p[1], 64, a, reveal=win(t, 7.8, 8.9))
-        pen.text("Rimini", p[0], p[1] + 58, 40, 0.8 * a, reveal=win(t, 8.9, 9.6))
-    if t > 11.0:
-        p = S((0, -150))
-        pen.text("21 d.C.", p[0] + 330, p[1] + 58, 40, 0.8 * a, reveal=win(t, 11.0, 11.8))
+        x, y = S((0, -300))
+        pen.text("Ponte di Tiberio", x, y, 66, a, reveal=win(t, 7.8, 8.9))
+        pen.text("Rimini", x - 16, y + 62, 42, 0.8 * a, align="right", reveal=win(t, 8.9, 9.6))
+        if t > 11.0:
+            pen.text("·  21 d.C.", x - 4, y + 62, 42, 0.8 * a, align="left", reveal=win(t, 11.0, 11.8))
     if t > 15.4:
-        p = S((1120, -320))
-        pen.text("via Flaminia", p[0], p[1], 36, 0.6 * a, reveal=win(t, 15.4, 16.4))
+        x, y = S((1180, 96))
+        pen.text("via Flaminia", x, y, 38, 0.65 * a, reveal=win(t, 15.4, 16.4))
     if t > 16.7:
-        p = S((PORTAL_X + 60 + TUN_L / 2, -330))
-        pen.text("Galleria del Furlo", p[0], p[1] - 30, 60, a, reveal=win(t, 16.7, 17.9))
+        x, y = S((PORTAL_X + TUN_L / 2 + 40, -500))
+        pen.text("Galleria del Furlo", x, y, 64, a, reveal=win(t, 16.7, 17.9))
         if t > 18.9:
-            pen.text("76 d.C.", p[0], p[1] + 22, 40, 0.8 * a, reveal=win(t, 18.9, 19.6))
+            pen.text("76 d.C.", x, y + 56, 42, 0.8 * a, reveal=win(t, 18.9, 19.6))
     if t > 21.4:
-        p = S((PORTAL_X + 60 + TUN_L / 2, -140))
-        pen.text("≈ 38 m", p[0], p[1], 46, a * smooth(win(t, 21.4, 22.0)), reveal=win(t, 21.4, 22.2))
+        x, y = S((PORTAL_X + TUN_L / 2 + 30, -300))
+        pen.text("≈ 38 m", x, y - 22, 48, a * smooth(win(t, 21.4, 22.0)), reveal=win(t, 21.4, 22.2))
     return [S(p) for p in STRADA_PONTI]
 
 
@@ -897,31 +929,53 @@ def _on(lo, la, grid):
 
 
 def _rete():
-    """Procedural web: real towns + random villages on land inside the empire, linked to near neighbours."""
+    """Procedural web: real towns + random villages on land inside the empire, joined by a spanning tree of
+    short land links plus a few loops between major towns. Grows outward from Rome."""
     rng = random.Random(150)
     nodes = list(NODI)
+    NM = len(NODI)
     tries = 0
-    while len(nodes) < len(NODI) + 330 and tries < 20000:
+    while len(nodes) < NM + 300 and tries < 20000:
         tries += 1
         lo, la = rng.uniform(-10, 41), rng.uniform(23, 56)
         if _on(lo, la, LAND) and _on(lo, la, EMP):
-            if all(math.hypot((lo - x) * 0.77, la - y) > 0.55 for x, y in nodes[-60:]):
+            if all(math.hypot((lo - x) * 0.77, la - y) > 0.6 for x, y in nodes):
                 nodes.append((lo, la))
+    n = len(nodes)
     P = np.array(nodes)
     Q = np.column_stack((P[:, 0] * 0.77, P[:, 1]))
-    edges = set()
-    for i in range(len(nodes)):
+
+    def ln(i, j):
+        return math.hypot(Q[j, 0] - Q[i, 0], Q[j, 1] - Q[i, 1])
+    cand = {}
+    for i in range(n):
         d = np.hypot(Q[:, 0] - Q[i, 0], Q[:, 1] - Q[i, 1])
         d[i] = 1e9
-        kk = 4 if i < len(NODI) else 3
-        for j in np.argsort(d)[:kk]:
-            if d[j] > 3.2:
+        for j in np.argsort(d)[:6]:
+            if d[j] > 3.4:
                 continue
             a, b = nodes[i], nodes[j]
             ok = sum(_on(lerp(a[0], b[0], f), lerp(a[1], b[1], f), LAND) for f in (0.2, 0.35, 0.5, 0.65, 0.8))
             if ok >= 4:
-                edges.add((min(i, j), max(i, j)))
-    # prune edges that make tiny angles with a shorter edge at the same node (keeps it road-like)
+                cand[(min(i, j), max(i, j))] = float(d[j])
+    # Kruskal: a spanning tree of the shortest links
+    parent = list(range(n))
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    edges = set()
+    for (i, j), L in sorted(cand.items(), key=lambda kv: kv[1]):
+        ri, rj = find(i), find(j)
+        if ri != rj:
+            parent[ri] = rj
+            edges.add((i, j))
+    for (i, j), L in sorted(cand.items()):
+        if (i, j) not in edges and rng.random() < (0.55 if (i < NM and j < NM) else 0.08):
+            edges.add((i, j))
+    # prune links making a tiny angle with a shorter one at the same node (keeps it road-like)
     adj = {}
     for i, j in edges:
         adj.setdefault(i, []).append(j)
@@ -929,30 +983,20 @@ def _rete():
 
     def ang(i, j):
         return math.atan2(Q[j, 1] - Q[i, 1], Q[j, 0] - Q[i, 0])
-
-    def ln(i, j):
-        return math.hypot(Q[j, 0] - Q[i, 0], Q[j, 1] - Q[i, 1])
     drop = set()
     for i, nb in adj.items():
         for x in nb:
             for y in nb:
                 if x < y:
                     da = abs((ang(i, x) - ang(i, y) + math.pi) % (2 * math.pi) - math.pi)
-                    if da < 0.38:
+                    if da < 0.4:
                         drop.add((min(i, x), max(i, x)) if ln(i, x) > ln(i, y) else (min(i, y), max(i, y)))
     edges = sorted(edges - drop)
-    # distance from Rome along the web (Dijkstra), with invisible sea hops between pieces
-    n = len(nodes)
+    # distance from Rome along the web (Dijkstra), with invisible sea hops between separate pieces
     g = [[] for _ in range(n)]
     for i, j in edges:
         g[i].append((j, ln(i, j)))
         g[j].append((i, ln(i, j)))
-    for i in range(n):        # sea hops: every node also links weakly to its 2 nearest (cost x1.6)
-        d = np.hypot(Q[:, 0] - Q[i, 0], Q[:, 1] - Q[i, 1])
-        d[i] = 1e9
-        for j in np.argsort(d)[:2]:
-            g[i].append((j, d[j] * 1.6))
-            g[j].append((i, d[j] * 1.6))
     import heapq
 
     def dijkstra():
@@ -969,7 +1013,7 @@ def _rete():
                     heapq.heappush(hq, (dist[j], j))
         return dist
     dist = dijkstra()
-    while max(dist) > 1e8:     # islands of the web not yet reached: one sea hop from the nearest reached node
+    while max(dist) > 1e8:
         reach = np.array([d < 1e8 for d in dist])
         R_, U_ = np.flatnonzero(reach), np.flatnonzero(~reach)
         D = np.hypot(Q[R_][:, None, 0] - Q[U_][None, :, 0], Q[R_][:, None, 1] - Q[U_][None, :, 1])
@@ -982,12 +1026,14 @@ def _rete():
             i, j = j, i
         a, b = nodes[i], nodes[j]
         L = ln(i, j)
-        off = rng.uniform(-0.09, 0.09) * L
+        off = rng.uniform(-0.08, 0.08) * L
         mx, my = (a[0] + b[0]) / 2, (a[1] + b[1]) / 2
         nx, ny = -(b[1] - a[1]), (b[0] - a[0])
         nn = math.hypot(nx, ny) or 1
-        mid = (mx + nx / nn * off, my + ny / nn * off)
-        out.append(dict(p=np.array([a, mid, b]), d0=dist[i], L=L, solid=False))
+        c = (mx + nx / nn * off, my + ny / nn * off)
+        q = [((1 - u) ** 2 * a[0] + 2 * u * (1 - u) * c[0] + u * u * b[0],
+              (1 - u) ** 2 * a[1] + 2 * u * (1 - u) * c[1] + u * u * b[1]) for u in (0, 0.25, 0.5, 0.75, 1.0)]
+        out.append(dict(p=np.array(q), d0=dist[i], L=L, solid=False))
     # ~2.7 % of the total length stays "known precisely": a few scattered short pieces
     tot = sum(e["L"] for e in out)
     order = list(range(len(out)))
@@ -996,7 +1042,7 @@ def _rete():
     for k in order:
         if acc > 0.027 * tot:
             break
-        if out[k]["L"] < 1.6:
+        if out[k]["L"] < 1.5:
             out[k]["solid"] = True
             acc += out[k]["L"]
     dmax = max(e["d0"] + e["L"] for e in out)
@@ -1004,16 +1050,16 @@ def _rete():
 
 
 RETE, RETE_DMAX = _rete()
-RETE_KM = 299171
-
-
-def _v3(lon, lat):
-    lo, la = np.radians(lon), np.radians(lat)
-    return np.stack((np.cos(la) * np.cos(lo), np.cos(la) * np.sin(lo), np.sin(la)), -1)
+RETE_P = np.array([e["p"] for e in RETE])          # (edges, 5, 2) lon/lat, gently curved
+RETE_D0 = np.array([e["d0"] for e in RETE])
+RETE_L = np.array([e["L"] for e in RETE])
+RETE_KM = 299171            # Itiner-e (2025): total length of the reconstructed network, km
+EARTH_KM = 40075
 
 
 class Globo:
-    """Blend between an equirectangular map (h = 0) and an orthographic globe (h = 1)."""
+    """Blend between an equirectangular map (h = 0) and an orthographic globe (h = 1).
+    k = R·π/180 px per degree so that the two agree at the centre."""
 
     def __init__(self, lon_c, lat_c, R, cx, cy, h):
         self.lon_c, self.lat_c, self.R, self.cx, self.cy, self.h = lon_c, lat_c, R, cx, cy, h
@@ -1031,22 +1077,8 @@ class Globo:
         x = self.R * np.cos(la) * np.sin(lo)
         y = self.R * (math.cos(p0) * np.sin(la) - math.sin(p0) * np.cos(la) * np.cos(lo))
         dep = math.sin(p0) * np.sin(la) + math.cos(p0) * np.cos(la) * np.cos(lo)
-        sx, sy = self.cx + x, self.cy - y
         h = self.h
-        return np.stack((px + (sx - px) * h, py + (sy - py) * h), -1), dep
-
-    def __call__(self, lon, lat):
-        p, d = self.arr(np.array([[lon, lat]], float))
-        return (float(p[0, 0]), float(p[0, 1]))
-
-    def vec(self, v3):
-        """Orthographic projection of unit vectors (N x 3) -> screen xy, depth."""
-        lo = math.radians(self.lon_c)
-        p0 = math.radians(self.lat_c)
-        e = np.array([-math.sin(lo), math.cos(lo), 0.0])                     # east
-        n = np.array([-math.sin(p0) * math.cos(lo), -math.sin(p0) * math.sin(lo), math.cos(p0)])  # north
-        c = np.array([math.cos(p0) * math.cos(lo), math.cos(p0) * math.sin(lo), math.sin(p0)])    # towards us
-        return np.column_stack((self.cx + self.R * (v3 @ e), self.cy - self.R * (v3 @ n))), v3 @ c
+        return np.stack((px + (self.cx + x - px) * h, py + (self.cy - y - py) * h), -1), dep
 
 
 def _runs_mask(xy, mask):
@@ -1063,41 +1095,51 @@ def _runs_mask(xy, mask):
     return out
 
 
-GC_LON, GC_LAT = 16.0, 39.5
-# the yarn: 7.5 laps around the Earth, each one (nearly) a great circle through Rome, slowly turning
-YARN_TURNS = 7.47
-_ROMA3 = _v3(12.49, 41.89)
-_E = np.cross(np.array([0, 0, 1.0]), _ROMA3)
-_E /= np.linalg.norm(_E)
-_N = np.cross(_ROMA3, _E)
+# the yarn: 7.47 laps (299,171 / 40,075 km). Each lap is a great circle tilted 70° to the line of sight; the
+# tilt direction turns a full revolution over all the laps, so the string wraps the globe evenly.
+YARN_TURNS = RETE_KM / EARTH_KM
+YARN_TAU = math.radians(70.0)
 
 
-def yarn(s1, s0=0.0, step=1 / 110):
+def yarn_xy(g, s1, s0=0.0, step=1 / 140):
+    """Screen points and depth of the yarn between laps s0..s1 on globe g."""
     s = np.arange(s0, s1, step)
     s = np.append(s, s1)
-    th = 2 * math.pi * s
-    psi = 0.35 + math.pi * s / YARN_TURNS * 0.94
-    tang = np.outer(np.cos(psi), _E) + np.outer(np.sin(psi), _N)
-    return np.outer(np.cos(th), _ROMA3) + np.sin(th)[:, None] * tang
+    phi = 0.35 + 2 * math.pi * s / YARN_TURNS
+    th = math.pi / 2 + 2 * math.pi * s                  # starts at the centre of the disc: Rome
+    tau = math.pi / 2 + (YARN_TAU - math.pi / 2) * np.clip(s / 0.7, 0, 1) ** 0.7
+    ct, st = np.cos(tau), np.sin(tau)
+    # in screen axes (x right, y up, z towards us): A in the screen plane, B mostly towards the viewer
+    Ax, Ay = -np.sin(phi), np.cos(phi)
+    Bx, By, Bz = -ct * np.cos(phi), -ct * np.sin(phi), st
+    x = np.cos(th) * Ax + np.sin(th) * Bx
+    y = np.cos(th) * Ay + np.sin(th) * By
+    z = np.sin(th) * Bz
+    return np.column_stack((g.cx + g.R * x, g.cy - g.R * y)), z
+
+
+GLOBE_R, GLOBE_X, GLOBE_Y = 340.0, 800.0, 540.0
+GC_LON = 16.0
+COL_X = 1470.0                        # text column next to the globe
 
 
 def cam_mondo(t):
-    # stage 1: zoom out from Italy over the empire;  stage 2: curl into a globe;  stage 3: lean in
+    """Stage 1: zoom out from Italy over the empire. Stage 2: the map curls into a globe.
+    Stage 3: it uncurls back into the map of the empire."""
     u1 = ease_io(win(t, 1.6, 7.0))
-    k1 = math.exp(lerp(math.log(92.0), math.log(33.0), u1))
-    lon = lerp(12.7, GC_LON, u1)
-    lat = lerp(42.9, GC_LAT + 2.0, u1)
-    cx, cy = W / 2, H / 2 - 30 * u1
-    u2 = ease_io(win(t, 14.6, 17.4))
-    h = smooth(win(t, 14.9, 17.0))
-    R = math.exp(lerp(math.log(k1 * 180 / math.pi), math.log(320.0), u2))
-    lat = lerp(lat, GC_LAT, u2)
-    cx, cy = lerp(cx, 760.0, u2), lerp(cy, 520.0, u2)
-    u3 = ease_io(win(t, 19.8, 21.8))
-    R = R * lerp(1.0, 1.28, u3)
-    cx = lerp(cx, 780.0, u3)
-    cy = lerp(cy, 560.0, u3)
-    lon = lon + 4.0 * u2 - 4.0 * u2 * win(t, 17.4, 24.0)  # a gentle turn of the globe
+    k = math.exp(lerp(math.log(92.0), math.log(33.0), u1))
+    lon, lat = lerp(12.7, 16.0, u1), lerp(42.9, 41.2, u1)
+    cx, cy = W / 2, lerp(H / 2, 520.0, u1)
+    u2 = ease_io(win(t, 14.9, 17.3))
+    h = smooth(win(t, 14.5, 16.6))
+    R = math.exp(lerp(math.log(k * 180 / math.pi), math.log(GLOBE_R), u2))
+    lon, lat = lerp(lon, 12.49, u2), lerp(lat, 41.89, u2)       # the globe is centred on Rome
+    cx, cy = lerp(cx, GLOBE_X, u2), lerp(cy, GLOBE_Y, u2)
+    u3 = ease_io(win(t, 19.9, 21.9))
+    h *= 1 - smooth(win(t, 19.9, 21.6))
+    R = math.exp(lerp(math.log(R), math.log(28.0 * 180 / math.pi), u3))
+    lon, lat = lerp(lon, 16.0, u3), lerp(lat, 41.0, u3)
+    cx, cy = lerp(cx, W / 2, u3), lerp(cy, 470.0, u3)
     return Globo(lon, lat, R, cx, cy, h)
 
 
@@ -1111,15 +1153,30 @@ def grat(g):
     for lo in range(-180, 180, 30):
         ll = np.column_stack((np.full(61, lo, float), np.linspace(-90, 90, 61)))
         xy, d = g.arr(ll)
-        out += _runs_mask(xy.tolist(), d > 0.02)
+        out += _runs_mask(xy.tolist(), d > 0.03)
     for la in (-60, -30, 0, 30, 60):
         ll = np.column_stack((np.linspace(-180, 180, 121), np.full(121, la, float)))
         xy, d = g.arr(ll)
-        out += _runs_mask(xy.tolist(), d > 0.02)
+        out += _runs_mask(xy.tolist(), d > 0.03)
     return out
 
 
 VIE_ARR = {k: np.array(v, float) for k, v in VIE.items()}
+
+
+def _punti(pen, pts, alpha, step=6.0, r=1.25):
+    """Dotted rendition of a polyline (a reconstructed, uncertain route): fine, evenly spaced dots."""
+    if alpha <= 0.01:
+        return
+    from motore.linea import resample_step
+    P = resample_step(pts, step)
+    ctx = pen.ctx
+    from motore.linea import INK
+    ctx.set_source_rgba(INK[0], INK[1], INK[2], alpha)
+    for x, y in P[1:-1]:
+        ctx.arc(x, y, r, 0, 2 * math.pi)
+        ctx.new_sub_path()
+    ctx.fill()
 
 
 @scena("mondo")
@@ -1127,72 +1184,70 @@ def mondo(pen, t, T, appear, vanish):
     a = 1.0 - vanish
     g = cam_mondo(t)
     h = g.h
-    # --- coastlines (map, then globe)
+    u2 = ease_io(win(t, 14.9, 17.3))
+    u3 = ease_io(win(t, 19.9, 21.9))
+    # --- coastlines (map, then globe, then map again)
     rv = smooth(win(t, 0.0, 2.4))
-    m = 50
     for i, c in enumerate(COSTE):
-        xy, dep = g.arr(c)
-        if h > 0:
-            vis = dep > 0.0
-            if not vis.any():
+        bb = COSTE_BB[i]
+        near = bb[0] > GC_LON - 60 and bb[2] < GC_LON + 60 and bb[1] > 10 and bb[3] < 70
+        if h <= 0.001:
+            if not near and not (bb[2] > -40 and bb[0] < 70 and bb[3] > 0 and bb[1] < 75):
                 continue
-            # far coasts (other continents) only appear as the globe forms
-            far = (np.abs(((c[:, 0] - g.lon_c + 180) % 360) - 180) > 55) | (c[:, 1] < 15) | (c[:, 1] > 65)
-            al = 0.42 if not far.any() else 0.42 * h * h
-            if al < 0.01:
-                continue
-            for r in _runs_mask(xy.tolist(), vis):
-                pen.line(r, 0.7, al, rv, vanish, smooth_=False, seed=500 + i)
-        else:
-            bb = COSTE_BB[i]
-            if bb[2] < -40 or bb[0] > 70 or bb[3] < 0 or bb[1] > 75:
-                continue
-            for r in runs_inside(xy, m):
-                pen.line(r.tolist(), 0.7, 0.42, rv, vanish, smooth_=False, seed=500 + i)
-    # --- globe outline and graticule
-    if h > 0.05:
-        kg = smooth(win(h, 0.3, 1.0))
-        pen.line(ellipse(g.cx, g.cy, g.R, g.R, 72), 1.0, 0.75 * a * kg, 1.0, vanish, closed=True, seed=1100)
-        gr = grat(g)
-        pen.lines(gr, kg, vanish, 0.16 * a, 0.55, seed=1110)
-    # --- the six main roads (quick recap at the start)
-    for j, (name, ll) in enumerate(VIE_ARR.items()):
-        if name == "Flaminia":
+            xy, _ = g.arr(c)
+            for r in runs_inside(xy, 50):
+                pen.line(r.tolist(), 0.7, 0.42, rv, vanish, smooth_=False, seed=500 + i, step=5.5)
             continue
+        al = 0.42 if near else 0.42 * h * h
+        if al < 0.01:
+            continue
+        xy, dep = g.arr(c)
+        vis = dep > 0.0
+        if not vis.any():
+            continue
+        for r in _runs_mask(xy.tolist(), vis):
+            pen.line(r, 0.7, al, rv, vanish, smooth_=False, seed=500 + i, step=6.0)
+    # --- globe graticule (the outline of the globe is the road itself)
+    if h > 0.05:
+        kg = smooth(win(h, 0.35, 1.0))
+        pen.lines(grat(g), kg, vanish, 0.15 * a, 0.55, seed=1110)
+    dots = smooth(win(t, 20.8, 22.0))
+    ksolid = smooth(win(t, 21.2, 22.0))
+    # --- the six main roads (a quick recap at the start)
+    for j, (name, ll) in enumerate(VIE_ARR.items()):
         xy, dep = g.arr(ll)
-        rv = ease_io(win(t, 0.6 + j * 0.35, 2.2 + j * 0.35))
-        dots = smooth(win(t, 20.6, 22.0))
-        pen.line(xy.tolist(), 0.95, 0.9 * a * (1 - dots), rv, vanish, seed=1200 + j)
+        if name != "Flaminia":
+            rv_ = ease_io(win(t, 0.6 + j * 0.3, 2.0 + j * 0.3))
+            pen.line(xy.tolist(), 0.95, 0.9 * a * (1 - dots), rv_, vanish, seed=1200 + j)
         if dots > 0:
-            _punti(pen, xy.tolist(), 0.8 * a * dots)
+            _punti(pen, xy.tolist(), 0.85 * a * dots, 7.0, 1.6)
     # --- the web grows out of Rome
     grow = ease_io(win(t, 4.6, 14.2)) * RETE_DMAX
-    dots = smooth(win(t, 20.6, 22.0))
-    ksolid = win(t, 21.2, 22.0)
     if grow > 0:
-        for e in RETE:
-            if grow <= e["d0"]:
+        XY, DEP = g.arr(RETE_P)
+        live = np.flatnonzero(RETE_D0 < grow)
+        for k in live:
+            e = RETE[k]
+            if h > 0 and DEP[k].min() < 0:
                 continue
-            r = clamp((grow - e["d0"]) / e["L"])
-            xy, dep = g.arr(e["p"])
-            pts = xy.tolist()
+            x, y = XY[k, :, 0], XY[k, :, 1]
+            if x.max() < -20 or x.min() > W + 20 or y.max() < -20 or y.min() > H + 20:
+                continue
+            r = min(1.0, (grow - e["d0"]) / e["L"])
+            pts = XY[k].tolist()
             if e["solid"]:
-                pen.line(pts, 0.75 + 0.35 * ksolid, (0.62 + 0.38 * ksolid) * a, r, vanish, seed=1300)
+                pen.line(pts, 0.6 + 0.6 * ksolid, (0.62 + 0.38 * ksolid) * a, r, vanish, smooth_=False, seed=1300)
             else:
                 if dots < 1:
-                    pen.line(pts, 0.55, 0.62 * a * (1 - dots), r, vanish, seed=1300)
+                    pen.line(pts, 0.55, 0.62 * a * (1 - dots), r, vanish, smooth_=False, seed=1300, step=5.0)
                 if dots > 0:
-                    _punti(pen, pts, 0.55 * a * dots)
+                    _punti(pen, pts, 0.7 * a * dots)
     # --- counter: the length of the web
-    km = RETE_KM * clamp(grow / RETE_DMAX) if grow > 0 else 0
     if t > 4.8:
-        kc = smooth(win(t, 4.8, 5.6))
+        km = RETE_KM * clamp(grow / RETE_DMAX)
         s = "≈ " + _fmt(int(round(km / 1000.0)) * 1000) + " km"
-        x, y = (W / 2, 968)
-        u2 = ease_io(win(t, 14.6, 17.4))
-        x, y = lerp(x, 1490, u2), lerp(y, 300, u2)
-        sz = lerp(76, 64, u2)
-        pen.text(s, x, y, sz, a * kc)
+        x, y = lerp(W / 2, COL_X, u2), lerp(968, 330, u2)
+        pen.text(s, x, y, lerp(78, 66, u2), a * smooth(win(t, 4.8, 5.6)) * (1 - u3))
         cap = smooth(win(t, 6.6, 7.4)) * (1 - u2)
         if cap > 0.01:
             pen.text("Itiner-e · 2025", W / 2 - 24, 1030, 32, 0.6 * a * cap, align="right", reveal=win(t, 6.6, 7.6))
@@ -1201,51 +1256,44 @@ def mondo(pen, t, T, appear, vanish):
             pen.text("strade dell'impero, ~150 d.C.", W / 2 + 24, 1030, 32, 0.6 * a * cap2, align="left",
                      reveal=win(t, 11.6, 12.8))
     # --- the yarn: more than seven times around the Earth
-    road_circle = ellipse(g.cx, g.cy, g.R + 22, g.R + 22, 90, a0=-math.pi * 0.7)
     s1 = YARN_TURNS * ease_io(win(t, 16.6, 19.6))
-    s0 = YARN_TURNS * smooth(win(t, 19.9, 21.0))
-    if s1 > 0.002 and s0 < YARN_TURNS - 0.01:
-        v3 = yarn(s1, s0)
-        xy, dep = g.vec(v3)
+    s0 = YARN_TURNS * smooth(win(t, 19.6, 20.5))
+    if s1 > 0.002 and s0 < YARN_TURNS - 0.01 and h > 0.9:
+        xy, dep = yarn_xy(g, s1, s0)
         pts = xy.tolist()
-        for r in _runs_mask(pts, dep > 0):
-            pen.line(r, 0.95, 0.95 * a, seed=1400)
         for r in _runs_mask(pts, dep <= 0):
-            pen.line(r, 0.6, 0.22 * a, seed=1401)
+            pen.line(r, 0.55, 0.2 * a, seed=1401, step=8.0)
+        for r in _runs_mask(pts, dep > 0):
+            pen.line(r, 0.9, 0.9 * a, seed=1400, step=6.0)
         if s1 < YARN_TURNS - 0.01:
-            pen.dot(pts[-1][0], pts[-1][1], 5, a)
-    # lap counter and caption
+            pen.dot(pts[-1][0], pts[-1][1], 5, a * (1.0 if dep[-1] > 0 else 0.35))
     if t > 16.6:
         laps = YARN_TURNS * ease_io(win(t, 16.6, 19.6))
-        n = int(laps + 1e-6)
-        s = f"× {n}" if laps < YARN_TURNS - 0.01 else "× 7,5"
-        kz = smooth(win(t, 16.6, 17.2))
-        pen.text(s, 1490, 470, 92, a * kz)
-        pen.text("più di 7 volte", 1490, 548, 40, 0.85 * a, reveal=win(t, 17.6, 18.4))
-        pen.text("il giro della Terra", 1490, 594, 40, 0.85 * a, reveal=win(t, 18.0, 18.9))
+        fa = a * smooth(win(t, 16.6, 17.2)) * (1 - u3)
+        s = f"× {min(7, max(1, math.ceil(laps - 1e-6)))}" if laps < YARN_TURNS - 0.01 else "× 7,5"
+        pen.text(s, COL_X, 520, 96, fa)
+        pen.text("più di 7 volte", COL_X, 606, 42, 0.85 * fa, reveal=win(t, 17.6, 18.4))
+        pen.text("il giro della Terra", COL_X, 654, 42, 0.85 * fa, reveal=win(t, 18.0, 18.9))
+    # --- legend: what we know precisely
     if t > 21.2:
-        k = win(t, 21.2, 22.2)
-        x0, y0 = 1330, 760
-        pen.line([(x0, y0), (x0 + 70, y0)], 1.2, a, k, vanish, seed=1500)
-        pen.text("tracciato esatto: ~2,7%", x0 + 92, y0 + 10, 38, a, align="left", reveal=win(t, 21.4, 22.4))
-        _punti(pen, [(x0, y0 + 56), (x0 + 70, y0 + 56)], 0.8 * a * smooth(k))
-        pen.text("ricostruito", x0 + 92, y0 + 66, 38, 0.7 * a, align="left", reveal=win(t, 21.9, 22.7))
-    # --- road: the Flaminia on the map, which becomes a ring around the globe
-    fl, _ = g.arr(VIE_ARR["Flaminia"])
-    fl = fl.tolist()
-    u = ease_io(win(t, 15.4, 17.2))
-    if u <= 0:
+        k = win(t, 21.2, 22.0)
+        x0, y0 = W / 2 - 230, 918
+        pen.line([(x0, y0 - 10), (x0 + 70, y0 - 10)], 1.25, a, k, vanish, seed=1500)
+        pen.text("tracciato esatto: ~2,7%", x0 + 96, y0, 40, a, align="left", reveal=win(t, 21.4, 22.4))
+        _punti(pen, [(x0, y0 + 46), (x0 + 70, y0 + 46)], 0.85 * a * smooth(k), 7.0, 1.6)
+        pen.text("ricostruito", x0 + 96, y0 + 56, 40, 0.7 * a, align="left", reveal=win(t, 21.9, 22.7))
+    # --- the road: the Flaminia on the map -> the outline of the Earth -> the Appia on the map
+    fl = g.arr(VIE_ARR["Flaminia"])[0].tolist()
+    circle = ellipse(g.cx, g.cy, g.R, g.R, 96, a0=-math.pi * 0.62)
+    ap = g.arr(np.array(resample(VIE["Appia"], 40)))[0].tolist()
+    m1 = ease_io(win(t, 16.0, 17.3))
+    m2 = ease_io(win(t, 20.0, 21.9))
+    if m1 <= 0:
         return fl
-    if u >= 1:
-        return road_circle
-    return morph(fl, road_circle, u, 120)
-
-
-def _punti(pen, pts, alpha, step=9.0):
-    """Dotted rendition of a polyline (an uncertain route)."""
-    if alpha <= 0.01:
-        return
-    from motore.linea import resample_step
-    P = resample_step(pts, step)
-    for x, y in P[1:-1]:
-        pen.dot(x, y, 1.6, alpha)
+    if m1 < 1:
+        return morph(fl, circle, m1, 120)
+    if m2 <= 0:
+        return circle
+    if m2 < 1:
+        return morph(circle, ap, m2, 120)
+    return ap
