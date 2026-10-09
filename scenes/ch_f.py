@@ -80,14 +80,14 @@ def raskolnikov(ctx, t, T, seg):
     camera(ctx, t, T, zoom=(1.0, 1.08), focus=(W * 0.5, H * 0.5))
 
     # stairwell wall, plaster cracks, door
-    fillp(ctx, [(-40, -40), (W + 40, -40), (W + 40, H * 0.80), (-40, H * 0.80)], mix("g5", "night", 0.55))
+    fillp(ctx, [(-40, -40), (W + 40, -40), (W + 40, H * 0.80), (-40, H * 0.80)], mix("g4", "night", 0.35))
     for i, (x, y) in enumerate([(300, 120), (640, 260), (1500, 90), (1720, 480)]):
         stroke(ctx, [(x, y), (x + 40, y + 120), (x + 10, y + 230)], 3, "g6", alpha=0.6, seed=i)
     shape(ctx, [(120, 240), (440, 240), (440, 830), (120, 830)], "night", 6, seed=2)
     stroke(ctx, [(160, 280), (400, 280), (400, 800), (160, 800)], 3, "g5", closed=True, alpha=0.7)
 
     # lamp and its warm pool on the wall
-    glow(ctx, 1110, 200, 820, "gold", 0.30 * flick)
+    glow(ctx, 1110, 200, 820, "gold", 0.42 * flick)
     shape(ctx, [(1080, 120), (1140, 120), (1150, 170), (1070, 170)], "g4", 4, seed=3)
 
     # stairs going down toward the viewer
@@ -101,7 +101,7 @@ def raskolnikov(ctx, t, T, seg):
     # Raskolnikov, gaunt, clutching his coat
     F.character(ctx, 1000, 430, 1.25, F.RASKOL, "fear", t)
     with at(ctx, 1000, 430, 1.25):
-        F.hand(ctx, -78, 214, a=0.3, s=1.5, color=mix("skin", "g2", 0.35), kind="fist")
+        F.hand(ctx, -78, 214, a=0.3, s=1.5, color=mix("skin", "skin_s", 0.3), kind="fist")
 
     # the split: crimson line, then the right half drains and cracks
     xt, xb = W * 0.56, W * 0.45
@@ -155,7 +155,7 @@ def _book(ctx, cx, cy, t):
             stroke(ctx, [(cx + side * 40, y), (cx + side * (40 + L), y - 4 + rng.uniform(-3, 3))], 2.6, "g5",
                    alpha=0.8, taper=(0.1, 0.3), seed=k)
     stroke(ctx, [(cx, cy - 70), (cx, cy + 140)], 6, "ink")
-    text(ctx, "LOS DEMONIOS", cx - 165, cy - 36, 30, FONT_TITLE, "ink", tracking=0.04)
+    text(ctx, "LOS DEMONIOS", cx - 165, cy - 24, 26, FONT_TITLE, "ink", tracking=0.04)
 
 
 def _fence(ctx, x0, x1, ytop, ybot):
@@ -249,28 +249,33 @@ def _c_padre(ctx, t, R):
     """An old king's hand offers a covenant scroll."""
     glow(ctx, 0, -40, R * 1.2, "gold", 0.45)
     sleeve = [(-R - 30, -60), (-120, -80), (-70, 30), (-60, 110), (-R - 30, 150)]
-    shape(ctx, sleeve, "red", 5, seed=3)
-    cel(ctx, sleeve, [(-R - 30, 20), (-70, 20), (-60, 150), (-R - 30, 150)], "red_d")
+    shape(ctx, sleeve, "red_d", 5, seed=3)
+    cel(ctx, sleeve, [(-R - 30, -10), (-90, -10), (-60, 150), (-R - 30, 150)], "red")
     shape(ctx, [(-124, -88), (-96, -96), (-48, 34), (-78, 46)], "gold", 4, seed=4)
-    dy = math.sin(t * 1.1) * 5
+    dy = math.sin(t * 1.1) * 4
     with at(ctx, 0, dy, 1.0):
-        palm = [(-60, -26), (-14, -34), (26, -28), (38, -6), (22, 20), (-30, 28), (-66, 10)]
+        # open palm turned up, knuckled old hand, offering
+        palm = [(-66, 34), (-34, 12), (8, 8), (44, 14), (58, 34), (20, 52), (-40, 54)]
         shape(ctx, palm, "skin2", 4.5, seed=6)
         for i in range(4):
-            y0 = -24 + i * 13
-            pts = [(24, y0), (50 + i * 2, y0 + 4), (68 + (i % 2) * 6, y0 + 12 + i * 2)]
-            stroke(ctx, pts, 19, "ink", taper=(0, 0))
-            stroke(ctx, pts, 13, "skin2", taper=(0, 0.25))
-        stroke(ctx, [(-14, -30), (8, -58), (24, -62)], 19, "ink", taper=(0, 0))
-        stroke(ctx, [(-14, -30), (8, -58), (24, -62)], 13, "skin2", taper=(0, 0.25))
-        with at(ctx, 4, -6 + math.sin(t * 1.3) * 3, 1.0, -0.12):
-            shape(ctx, [(-72, -26), (72, -26), (72, 26), (-72, 26)], "paper", 4, seed=7)
-            shape(ctx, circle_pts(-72, 0, 25, 18), "g2", 4, seed=8)
-            shape(ctx, circle_pts(72, 0, 25, 18), "g2", 4, seed=9)
-            for k in range(3):
-                stroke(ctx, [(-50, -14 + k * 12), (50, -14 + k * 12)], 2.5, "g4", alpha=0.7, taper=(0.2, 0.2))
-            fillp(ctx, circle_pts(0, 8, 14, 16), "red")
-            stroke(ctx, circle_pts(0, 8, 17, 16), 3, "gold", closed=True, taper=(0, 0))
+            x0 = 14 + i * 13
+            pts = [(x0, 14 + i * 2), (x0 + 12, -4 + i * 2), (x0 + 18 - (i % 2) * 4, -14 + i * 1)]
+            stroke(ctx, pts, 17, "ink", taper=(0, 0))
+            stroke(ctx, pts, 11, "skin2", taper=(0, 0.25))
+        thumb = [(-30, 16), (-14, -6), (4, -12)]
+        stroke(ctx, thumb, 17, "ink", taper=(0, 0))
+        stroke(ctx, thumb, 11, "skin2", taper=(0, 0.25))
+        for k in range(3):   # knuckle creases
+            stroke(ctx, [(-10 + k * 16, 24), (-6 + k * 16, 36)], 2.2, "skin_s", alpha=0.8, taper=(0.2, 0.2))
+        # the covenant scroll, held just above the palm
+        with at(ctx, 4, -36 + math.sin(t * 1.3) * 3, 1.0, -0.08):
+            shape(ctx, [(-62, -16), (62, -16), (62, 16), (-62, 16)], "paper", 4, seed=7)
+            shape(ctx, circle_pts(-62, 0, 19, 16), "g2", 4, seed=8)
+            shape(ctx, circle_pts(62, 0, 19, 16), "g2", 4, seed=9)
+            for k in range(2):
+                stroke(ctx, [(-40, -6 + k * 12), (40, -6 + k * 12)], 2.2, "g4", alpha=0.7, taper=(0.2, 0.2))
+            fillp(ctx, circle_pts(0, 0, 10, 14), "red")
+            stroke(ctx, circle_pts(0, 0, 12.5, 14), 2.5, "gold", closed=True, taper=(0, 0))
 
 
 def _c_hijo(ctx, t, R):
@@ -285,8 +290,8 @@ def _c_hijo(ctx, t, R):
                6, "gold_l", alpha=0.5, taper=(0.2, 0.6), seed=i)
     fillp(ctx, [(-R - 10, 40), (-100, 30), (0, 46), (110, 28), (R + 10, 40), (R + 10, R + 10), (-R - 10, R + 10)],
           "ink")
-    F.serpent(ctx, [(-190, 128), (-100, 118), (0, 120), (110, 134)], t, thick=40, body="teal_d", belly="teal",
-              spikes_c="ink", head_size=0.9, seed=5, wave=0.0, open_jaw=0.0, ink=4)
+    F.serpent(ctx, [(-190, 128), (-100, 118), (0, 120), (110, 134)], t, thick=46, body="teal", belly="teal_l",
+              spikes_c="ink2", head_size=0.9, seed=5, wave=0.0, open_jaw=0.0, ink=4)
     F.character(ctx, -18, -66, 0.62, F.HERO, "grim", t)
     F.limb(ctx, (46, 30), (106, -20), (94, -66), 26, 20, "coat", "coat_s", 4.5, 3)
     shape(ctx, blade((92, -74), (104, -186), 20, bend=0.05), "steel_l", 3.5, seed=8)

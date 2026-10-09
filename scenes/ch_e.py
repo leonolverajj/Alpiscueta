@@ -119,7 +119,7 @@ def _rain(ctx, t, n=80, seed=3):
         x = rng.uniform(W * 0.16, W * 0.84)
         ph = rng.uniform(0, 1)
         y = y0 + ((ph + t * 0.55) % 1.0) * (y1 - y0)
-        stroke(ctx, [(x, y), (x - 6, y + 30)], 2.4, "teal_l", alpha=0.8, taper=(0.1, 0.7), seed=i)
+        stroke(ctx, [(x, y), (x - 6, y + 34)], 3.4, "teal_l", alpha=0.9, taper=(0.1, 0.7), seed=i)
 
 
 def _well(ctx, t):
@@ -155,7 +155,8 @@ def cosmos_dome(ctx, t, T, seg):
     # the vault
     dome = _dome()
     fillp(ctx, dome, "cobalt_l", alpha=0.25)
-    cel(ctx, dome, [(_DOME_CX + 80, 0), (W, 0), (W, H), (_DOME_CX + 80, H)], "cobalt_d", alpha=0.25)
+    shade_half = [p for p in dome if p[0] >= _DOME_CX] + [(_DOME_CX, _DOME_CY)]
+    fillp(ctx, shade_half, "cobalt_d", alpha=0.22)
     stroke(ctx, dome, 7, "ink", taper=(0.04, 0.04), wobble=0.1, seed=4)
     _rain(ctx, t)
     # salt ocean around the edges
@@ -270,7 +271,7 @@ def comedy_arc(ctx, t, T, seg):
 # ================================================================= s44  four_sources
 _FOUR = [
     ("J", "cobalt_d", [(-90, 0.24 * H), (0.18 * W, 0.30 * H), (0.34 * W, 0.40 * H), (W / 2 - 360, H / 2 - 70)],
-     (0.18 * W, 0.19 * H)),
+     (0.10 * W, 0.40 * H)),
     ("E", "teal_d", [(0.66 * W, -90), (0.62 * W, 0.20 * H), (0.56 * W, 0.30 * H), (W / 2 - 120, H / 2 - 170)],
      (0.70 * W, 0.12 * H)),
     ("P", "red_d", [(W + 90, 0.74 * H), (0.80 * W, 0.68 * H), (0.68 * W, 0.60 * H), (W / 2 + 360, H / 2 + 70)],
@@ -338,7 +339,7 @@ def _stitchers(ctx, t):
             stroke(ctx, [(x - 9 * side, y - 4), (x + 9 * side, y + 4)], 3.5, "red", taper=(0.1, 0.1),
                    seed=i + k * 20)
         hy = top + ((int(m) % N) + 0.5) * gap
-        F.hand(ctx, x + 26, hy, a=0.0, s=1.5, color="skin", kind="fist", fx=-1, shade="skin_s")
+        F.hand(ctx, x + 30, hy, a=0.0, s=2.1, color="skin", kind="fist", fx=-1, shade="skin_s")
 
 
 @scene("four_sources")
@@ -346,11 +347,11 @@ def four_sources(ctx, t, T, seg):
     bg_studio(ctx, t, seed=44, tone=0.2)
     camera(ctx, t, T, zoom=(1.0, 1.04))
     for i, (letter, color, ctrl, lab) in enumerate(_FOUR):
-        _river(ctx, t, ctrl, color, phase=i * 1.7, grow=win(t, 0.1 + i * 0.12, 0.55 + i * 0.12))
+        _river(ctx, t, ctrl, color, phase=i * 1.7, grow=win(t, T * (0.04 + i * 0.05), T * (0.28 + i * 0.05)))
     _scroll(ctx, t)
     _stitchers(ctx, t)
     for i, (letter, color, ctrl, lab) in enumerate(_FOUR):
-        a = win(t, 0.3 + i * 0.12, 0.7 + i * 0.12)
+        a = win(t, T * (0.2 + i * 0.05), T * (0.3 + i * 0.05))
         text(ctx, letter, lab[0] + 6, lab[1] + 6, 130, FONT_TITLE, "red", alpha=a)
         text(ctx, letter, lab[0], lab[1], 130, FONT_TITLE, "ink", alpha=a)
     caption_tag(ctx, "CUATRO FUENTES", 90, 100, t, 40, accent="red", appear=0.6)
@@ -370,7 +371,7 @@ def _logo_objects():
             ang = rng.uniform(-0.40, 0.40)
             d = rng.uniform(430, 1180)
             x = _ORIG[0] + math.cos(ang) * d
-            y = _ORIG[1] + math.sin(ang) * d + 60
+            y = _ORIG[1] + math.sin(ang) * d * 0.6 + 110
             kind = ("mount", "tree", "person")[i % 3]
             sc = 0.55 + d / 1180 * 0.55
             _LOGO_OBJS.append((ang, x, y, kind, sc, i))
@@ -471,7 +472,7 @@ def imago_dei(ctx, t, T, seg):
     sm = (mx, my + 230)
     sw = (wx, wy + 230)
     star_at = (W / 2, H * 0.2)
-    u = ease_io(win(t, 0.25, 0.7))
+    u = ease_io(win(t, T * 0.12, T * 0.45))
     flare = 0.8 + 0.2 * math.sin(t * 5)
     for (x0, y0), tag in ((sm, 0), (sw, 1)):
         cxq = (x0 + star_at[0]) / 2
@@ -489,7 +490,7 @@ def imago_dei(ctx, t, T, seg):
         # ember left behind in the chest
         glow(ctx, x0, y0, 60, "gold", 0.35 * flare)
     # the star they form above them
-    ks = ease_back(win(t, 0.6, 0.9), 1.6)
+    ks = ease_back(win(t, T * 0.45, T * 0.6), 1.6)
     if ks > 0:
         glow(ctx, star_at[0], star_at[1], 320 * ks, "gold", 0.5 * ks)
         star = spikes(star_at[0], star_at[1], 26 * ks, 92 * ks, 8, -math.pi / 2, 1.5 * math.pi, var=0.0)
