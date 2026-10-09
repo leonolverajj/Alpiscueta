@@ -1,0 +1,513 @@
+"""Batch F: crime and camps, the Trinity, the void, the light, and the final call."""
+import math
+import random
+
+import cairo
+
+from engine.kit import (FONT_CAPS, FONT_TITLE, H, W, at, bg_studio, blade, camera, caption_tag, cel, circle_pts,
+                        clip, ease_back, ease_io, ease_out, fillp, glow, hatch, hud, lerp, lingrad, mix, particles,
+                        setc, shape, speedlines, ss, stroke, text, ui_glyphs, win)
+from engine import figures as F
+from . import scene
+from .myth import waves
+
+
+# ----------------------------------------------------------------- shared helpers
+def _faded(ctx, alpha, draw):
+    """Draw into a group and paint it at alpha (fades a figure in or out)."""
+    if alpha <= 0.002:
+        return
+    ctx.push_group()
+    draw()
+    grp = ctx.pop_group()
+    ctx.set_source(grp)
+    ctx.paint_with_alpha(min(1.0, alpha))
+
+
+def _prefix(pts, k):
+    """The first fraction k (0..1) of a polyline, measured by arc length."""
+    lens = [0.0]
+    for a, b in zip(pts, pts[1:]):
+        lens.append(lens[-1] + math.hypot(b[0] - a[0], b[1] - a[1]))
+    target = lens[-1] * max(0.0, min(1.0, k))
+    out = [pts[0]]
+    for i in range(1, len(pts)):
+        if lens[i] <= target:
+            out.append(pts[i])
+            continue
+        a, b = pts[i - 1], pts[i]
+        span = (lens[i] - lens[i - 1]) or 1.0
+        f = (target - lens[i - 1]) / span
+        out.append((a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f))
+        break
+    return out
+
+
+def _sea(ctx, t, amp, warm=0.0):
+    """Three churning layers of water. warm=0 is pitch dark, warm=1 is gold-lit."""
+    c_back = mix(mix("sea", "ink", 0.35), "gold_d", warm * 0.5)
+    c_mid = mix("sea", "gold_d", warm * 0.6)
+    c_front = mix("ink", "gold_d", warm * 0.3)
+    crest = mix("sea_l", "gold_l", warm)
+    waves(ctx, t * 0.9, H * 0.56, c_back, n=7, amp=amp * 0.8, seed=11, crest=crest)
+    waves(ctx, t * 1.1, H * 0.70, c_mid, n=6, amp=amp, seed=12, crest=crest)
+    waves(ctx, t * 1.3, H * 0.86, c_front, n=5, amp=amp * 1.15, seed=13, crest=crest, ink=6)
+
+
+# ----------------------------------------------------------------- s48 raskolnikov
+def _axe_shadow(ctx, t, flick):
+    """Shadow of an axe on the stairwell wall. Silhouette only."""
+    p0 = (1260.0, 800.0)
+    p1 = (1520.0 + math.sin(t * 0.7) * 14, 170.0 + math.sin(t * 1.1) * 10)
+    L = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
+    ang = math.atan2(p1[1] - p0[1], p1[0] - p0[0])
+    a = 0.88 * flick
+    with at(ctx, p1[0], p1[1], 1.0, ang):
+        stroke(ctx, [(-L, 0), (0, 0)], 18, "night", taper=(0.0, 0.0), wobble=0.0, alpha=a)
+        head = [(-8, -78), (26, -90), (50, -62), (58, -20), (52, 0), (58, 26), (50, 64), (26, 92), (-8, 80)]
+        shape(ctx, head, "night", 0, alpha=a)
+
+
+@scene("raskolnikov")
+def raskolnikov(ctx, t, T, seg):
+    u = t / T
+    k_line = ease_out(win(u, 0.60, 0.70), 2)     # the crimson split sweeps down
+    k_grey = ss(win(u, 0.70, 0.84))              # the right side drains to grey
+    k_crack = ss(win(u, 0.74, 0.92))             # cracks run out from the split
+    flick = 0.9 + 0.1 * math.sin(t * 11.0) * math.sin(t * 2.7)
+
+    bg_studio(ctx, t, seed=41, dark=True)
+    camera(ctx, t, T, zoom=(1.0, 1.08), focus=(W * 0.5, H * 0.5))
+
+    # stairwell wall, plaster cracks, door
+    fillp(ctx, [(-40, -40), (W + 40, -40), (W + 40, H * 0.80), (-40, H * 0.80)], mix("g5", "night", 0.55))
+    for i, (x, y) in enumerate([(300, 120), (640, 260), (1500, 90), (1720, 480)]):
+        stroke(ctx, [(x, y), (x + 40, y + 120), (x + 10, y + 230)], 3, "g6", alpha=0.6, seed=i)
+    shape(ctx, [(120, 240), (440, 240), (440, 830), (120, 830)], "night", 6, seed=2)
+    stroke(ctx, [(160, 280), (400, 280), (400, 800), (160, 800)], 3, "g5", closed=True, alpha=0.7)
+
+    # lamp and its warm pool on the wall
+    glow(ctx, 1110, 200, 820, "gold", 0.30 * flick)
+    shape(ctx, [(1080, 120), (1140, 120), (1150, 170), (1070, 170)], "g4", 4, seed=3)
+
+    # stairs going down toward the viewer
+    fillp(ctx, [(-40, H * 0.80), (W + 40, H * 0.80), (W + 40, H + 40), (-40, H + 40)], "night")
+    for i in range(6):
+        y = H * 0.80 + 26 + i * 44 + i * i * 2
+        stroke(ctx, [(-40, y + i * 3), (W + 40, y - 6 + i * 3)], 5, "g6", taper=(0.02, 0.02), alpha=0.9, seed=i)
+
+    _axe_shadow(ctx, t, flick)
+
+    # Raskolnikov, gaunt, clutching his coat
+    F.character(ctx, 1000, 430, 1.25, F.RASKOL, "fear", t)
+    with at(ctx, 1000, 430, 1.25):
+        F.hand(ctx, -78, 214, a=0.3, s=1.5, color=mix("skin", "g2", 0.35), kind="fist")
+
+    # the split: crimson line, then the right half drains and cracks
+    xt, xb = W * 0.56, W * 0.45
+    with hud(ctx):
+        if k_line > 0:
+            stroke(ctx, [(xt, 0), (lerp(xt, xb, k_line), H * k_line)], 12, "red", taper=(0.0, 0.0),
+                   wobble=0.05, seed=5)
+        if k_grey > 0:
+            ext = (xt - xb) * 60 / H
+            right = [(xt, 0), (W + 60, 0), (W + 60, H + 60), (xb - ext, H + 60)]
+            with clip(ctx, right):
+                ctx.set_operator(cairo.OPERATOR_HSL_SATURATION)
+                setc(ctx, "g4", k_grey)
+                ctx.paint()
+                ctx.set_operator(cairo.OPERATOR_OVER)
+                setc(ctx, "night", 0.35 * k_grey)
+                ctx.paint()
+                rng = random.Random(7)
+                for i in range(7):
+                    y0 = rng.uniform(0.1, 0.9) * H
+                    x0 = xt + (xb - xt) * (y0 / H)
+                    pts = [(x0, y0)]
+                    for _ in range(4):
+                        x, y = pts[-1]
+                        pts.append((x + rng.uniform(40, 120), y + rng.uniform(-80, 80)))
+                    part = _prefix(pts, k_crack)
+                    if len(part) > 1:
+                        stroke(ctx, part, 5, "ink", taper=(0.05, 0.3), seed=i)
+                        stroke(ctx, part, 1.6, "g0", alpha=0.7, taper=(0.05, 0.3), seed=i)
+        text(ctx, "ANTES", 140, 150, 64, FONT_CAPS, "g0", align="left", tracking=0.12, alpha=k_line)
+        text(ctx, "DESPUÉS", W - 140, 150, 64, FONT_CAPS, "g2", align="right", tracking=0.12, alpha=k_grey)
+
+    caption_tag(ctx, "CRIMEN Y CASTIGO", 100, H - 170, t, size=40, appear=0.5)
+    ui_glyphs(ctx, t, seed=6)
+
+
+# ----------------------------------------------------------------- s49 gulag
+def _book(ctx, cx, cy, t):
+    """Open book with crimson boards and a title on the left page."""
+    fillp(ctx, circle_pts(cx, cy + 160, 340, 40, ry=34), "ink", alpha=0.18)
+    shape(ctx, [(cx - 340, cy - 40), (cx, cy - 90), (cx + 340, cy - 40), (cx + 352, cy + 120), (cx, cy + 170),
+                (cx - 352, cy + 120)], "red_d", 6, seed=1)
+    stroke(ctx, [(cx - 326, cy - 26), (cx, cy - 72), (cx + 326, cy - 26)], 2.5, "gold", alpha=0.8)
+    for side in (-1, 1):
+        pg = [(cx, cy - 70), (cx + side * 320, cy - 36), (cx + side * 330, cy + 100), (cx, cy + 140)]
+        shape(ctx, pg, "g0", 5, seed=2 + side)
+        rng = random.Random(30 + side)
+        for k in range(9):
+            y = cy - 6 + k * 16
+            L = rng.uniform(170, 240)
+            stroke(ctx, [(cx + side * 40, y), (cx + side * (40 + L), y - 4 + rng.uniform(-3, 3))], 2.6, "g5",
+                   alpha=0.8, taper=(0.1, 0.3), seed=k)
+    stroke(ctx, [(cx, cy - 70), (cx, cy + 140)], 6, "ink")
+    text(ctx, "LOS DEMONIOS", cx - 165, cy - 36, 30, FONT_TITLE, "ink", tracking=0.04)
+
+
+def _fence(ctx, x0, x1, ytop, ybot):
+    xs = [x0 + i * (x1 - x0) / 6 for i in range(7)]
+    for x in xs:
+        stroke(ctx, [(x, ybot), (x + 2, ytop)], 7, "g5", taper=(0.0, 0.0), wobble=0.05, seed=int(x) % 97)
+    for yy in (ytop + 30, ytop + 70):
+        wire = [(x, yy + (6 if i % 2 else 0)) for i, x in enumerate(xs)]
+        stroke(ctx, wire, 2.5, "ink", smooth=True, taper=(0.0, 0.0))
+        for j in range(12):
+            bx = x0 + (x1 - x0) * (j + 0.5) / 12
+            by = yy + 2 * math.sin(j * 1.3)
+            stroke(ctx, [(bx - 7, by - 7), (bx + 7, by + 7)], 3, "ink", taper=(0, 0))
+            stroke(ctx, [(bx - 7, by + 7), (bx + 7, by - 7)], 3, "ink", taper=(0, 0))
+
+
+def _tower(ctx, x, yb, t):
+    for dx in (-60, 60):
+        stroke(ctx, [(x + dx, yb - 250), (x + dx * 1.15, yb)], 9, "ink", taper=(0.0, 0.0))
+    stroke(ctx, [(x - 60, yb - 120), (x + 60, yb - 60)], 5, "ink", taper=(0.0, 0.0))
+    # searchlight sweeping over the camp
+    o = (x, yb - 290)
+    a = math.pi * 0.5 + 0.5 + math.sin(t * 0.55) * 0.4
+    far = [(o[0] + math.cos(a + d) * 1000, o[1] + math.sin(a + d) * 1000) for d in (-0.12, 0.12)]
+    fillp(ctx, [o, far[0], far[1]], "gold_l", alpha=0.20)
+    shape(ctx, [(x - 80, yb - 330), (x + 80, yb - 330), (x + 80, yb - 240), (x - 80, yb - 240)], "ink", 5, seed=4)
+    shape(ctx, [(x - 100, yb - 330), (x, yb - 400), (x + 100, yb - 330)], "ink", 5, seed=5)
+    fillp(ctx, [(x - 40, yb - 300), (x + 40, yb - 300), (x + 40, yb - 272), (x - 40, yb - 272)], "gold_l")
+    glow(ctx, o[0], o[1], 110, "gold_l", 0.5)
+
+
+@scene("gulag")
+def gulag(ctx, t, T, seg):
+    u = t / T
+    k_real = ss(win(u, 0.56, 0.70))
+    divx = lambda y: lerp(W * 0.52, W * 0.48, y / H)  # the divider between the two worlds
+    left = [(-60, -60), (divx(-60), -60), (divx(H + 60), H + 60), (-60, H + 60)]
+    right = [(divx(-60), -60), (W + 80, -60), (W + 80, H + 60), (divx(H + 60), H + 60)]
+
+    fillp(ctx, [(-60, -60), (W + 80, -60), (W + 80, H + 60), (-60, H + 60)], "paper")
+    camera(ctx, t, T, zoom=(1.0, 1.05), focus=(W / 2, H / 2))
+
+    # ---- left: the book of the prophecy
+    with clip(ctx, left):
+        hatch(ctx, [(0, 0), (W * 0.3, 0), (W * 0.3, H), (0, H)], angle=0.7, gap=18, w=1.2, color="g4",
+              alpha=0.25, seed=3)
+        cx, cy = 520, 640
+        _book(ctx, cx, cy, t)
+        for i in range(6):
+            k = (t * 0.11 + i / 6) % 1.0
+            x = cx + math.sin(i * 2.1) * (60 + 110 * k)
+            y = cy - 40 - k * 420
+            h = 170 + 70 * (1 - k)
+            alpha = ss(k * 5) * (1 - ss((k - 0.6) / 0.4))
+            _faded(ctx, alpha, lambda x=x, y=y, h=h, i=i: F.person(
+                ctx, x, y, h, "ink", shade="g6", pose="stand", t=t, fx=1 if i % 2 else -1, seed=i, arm_up=0.6))
+
+    # ---- right: the camp in snow
+    with clip(ctx, right):
+        fillp(ctx, [(divx(0), 0), (W + 80, 0), (W + 80, H + 60), (divx(H), H + 60)], "night")
+        fillp(ctx, [(divx(H * 0.6), H * 0.6), (W + 80, H * 0.52), (W + 80, H + 60), (divx(H), H + 60)], "g2")
+        fillp(ctx, [(divx(H * 0.6), H * 0.6), (W + 80, H * 0.52), (W + 80, H * 0.58), (divx(H * 0.6), H * 0.64)],
+              "g0", alpha=0.9)
+        _fence(ctx, W * 0.56, W * 0.82, H * 0.60, H * 0.78)
+        _tower(ctx, W * 0.86, H * 0.70, t)
+        for i in range(6):
+            x = W * 0.55 + i * 175 - (t * 26) % 175
+            y = H * 0.9 + math.sin(i * 1.7) * 14
+            F.person(ctx, x, y, 230, "ink2", shade="ink", pose="walk", t=t + i * 0.3, fx=1, seed=i, ink=4)
+        particles(ctx, t, 90, seed=8, color="g0", region=(W * 0.5, 0, W, H), speed=(-14, 55), size=(1.0, 2.6),
+                  alpha=0.7)
+
+    # ---- the thread that links prophecy and reality
+    thread = [(800, 600), (960, 420), (1120, 470), (1240, 650), (1380, 860)]
+    kt = ease_out(win(u, 0.22, 0.52), 2)
+    if kt > 0.01:
+        stroke(ctx, _prefix(thread, kt), 7, "red", smooth=True, taper=(0.02, 0.15), seed=2)
+        stroke(ctx, _prefix(thread, kt), 2.2, "red_l", smooth=True, taper=(0.02, 0.15), seed=2)
+    if kt >= 0.99:
+        bx, by = _prefix(thread, (t * 0.12) % 1.0)[-1]
+        glow(ctx, bx, by, 70, "red_l", 0.8)
+        fillp(ctx, circle_pts(bx, by, 6, 12), "g0")
+
+    caption_tag(ctx, "PROFECÍA", 100, 100, t, size=44, appear=0.2, accent="red")
+    caption_tag(ctx, "REALIDAD", 1180, 100, t, size=44, appear=T * 0.58, accent="gold")
+    ui_glyphs(ctx, t, seed=12, region=(W * 0.5, H * 0.6, W, H))
+
+
+# ----------------------------------------------------------------- s50 trinity
+def _c_padre(ctx, t, R):
+    """An old king's hand offers a covenant scroll."""
+    glow(ctx, 0, -40, R * 1.2, "gold", 0.45)
+    sleeve = [(-R - 30, -60), (-120, -80), (-70, 30), (-60, 110), (-R - 30, 150)]
+    shape(ctx, sleeve, "red", 5, seed=3)
+    cel(ctx, sleeve, [(-R - 30, 20), (-70, 20), (-60, 150), (-R - 30, 150)], "red_d")
+    shape(ctx, [(-124, -88), (-96, -96), (-48, 34), (-78, 46)], "gold", 4, seed=4)
+    dy = math.sin(t * 1.1) * 5
+    with at(ctx, 0, dy, 1.0):
+        palm = [(-60, -26), (-14, -34), (26, -28), (38, -6), (22, 20), (-30, 28), (-66, 10)]
+        shape(ctx, palm, "skin2", 4.5, seed=6)
+        for i in range(4):
+            y0 = -24 + i * 13
+            pts = [(24, y0), (50 + i * 2, y0 + 4), (68 + (i % 2) * 6, y0 + 12 + i * 2)]
+            stroke(ctx, pts, 19, "ink", taper=(0, 0))
+            stroke(ctx, pts, 13, "skin2", taper=(0, 0.25))
+        stroke(ctx, [(-14, -30), (8, -58), (24, -62)], 19, "ink", taper=(0, 0))
+        stroke(ctx, [(-14, -30), (8, -58), (24, -62)], 13, "skin2", taper=(0, 0.25))
+        with at(ctx, 4, -6 + math.sin(t * 1.3) * 3, 1.0, -0.12):
+            shape(ctx, [(-72, -26), (72, -26), (72, 26), (-72, 26)], "paper", 4, seed=7)
+            shape(ctx, circle_pts(-72, 0, 25, 18), "g2", 4, seed=8)
+            shape(ctx, circle_pts(72, 0, 25, 18), "g2", 4, seed=9)
+            for k in range(3):
+                stroke(ctx, [(-50, -14 + k * 12), (50, -14 + k * 12)], 2.5, "g4", alpha=0.7, taper=(0.2, 0.2))
+            fillp(ctx, circle_pts(0, 8, 14, 16), "red")
+            stroke(ctx, circle_pts(0, 8, 17, 16), 3, "gold", closed=True, taper=(0, 0))
+
+
+def _c_hijo(ctx, t, R):
+    """Sunrise over a slain dragon; the son stands with a raised sword."""
+    fillp(ctx, circle_pts(0, 0, R, 72), "cobalt_d")
+    glow(ctx, 0, 40, R * 1.1, "gold_l", 0.5)
+    upper = [(math.cos(a) * 118, 40 + math.sin(a) * 118) for a in [math.pi + i * math.pi / 24 for i in range(25)]]
+    fillp(ctx, upper, "gold_l")
+    for i in range(9):
+        a = math.pi + (i + 0.5) * math.pi / 9
+        stroke(ctx, [(math.cos(a) * 150, 40 + math.sin(a) * 150), (math.cos(a) * 200, 40 + math.sin(a) * 200)],
+               6, "gold_l", alpha=0.5, taper=(0.2, 0.6), seed=i)
+    fillp(ctx, [(-R - 10, 40), (-100, 30), (0, 46), (110, 28), (R + 10, 40), (R + 10, R + 10), (-R - 10, R + 10)],
+          "ink")
+    F.serpent(ctx, [(-190, 128), (-100, 118), (0, 120), (110, 134)], t, thick=40, body="teal_d", belly="teal",
+              spikes_c="ink", head_size=0.9, seed=5, wave=0.0, open_jaw=0.0, ink=4)
+    F.character(ctx, -18, -66, 0.62, F.HERO, "grim", t)
+    F.limb(ctx, (46, 30), (106, -20), (94, -66), 26, 20, "coat", "coat_s", 4.5, 3)
+    shape(ctx, blade((92, -74), (104, -186), 20, bend=0.05), "steel_l", 3.5, seed=8)
+    stroke(ctx, [(74, -74), (110, -70)], 8, "gold", taper=(0, 0))
+    F.hand(ctx, 92, -66, a=-0.2, s=0.7, color="coat", kind="fist")
+
+
+def _c_espiritu(ctx, t, R):
+    """A flame that burns without consuming the bush."""
+    glow(ctx, 0, 60, R * 1.2, "teal", 0.35)
+    rng = random.Random(21)
+    for i in range(15):
+        bx = -165 + i * 24 + rng.uniform(-6, 6)
+        tip = (bx + rng.uniform(-30, 30), 150 - rng.uniform(110, 150))
+        shape(ctx, blade((bx, 160), tip, 34, bend=rng.uniform(-0.2, 0.2)), "teal_d" if i % 3 else "sea_l", 4,
+              seed=i)
+    for i in range(7):
+        x = lerp(-44, 44, i / 6)
+        L = 120 + 50 * math.sin(t * 6 + i * 1.7) + (i % 2) * 20
+        tipx = x * 0.5 + math.sin(t * 4 + i) * 10
+        shape(ctx, blade((x, 80), (tipx, 80 - L), 46, bend=0.08), "teal", 0, alpha=0.9)
+        shape(ctx, blade((x * 0.9, 80), (tipx * 0.95, 80 - L * 0.8), 26, bend=-0.08), "teal_l", 0)
+    shape(ctx, blade((0, 80), (0, -40 + math.sin(t * 9) * 8), 14), "white", 0, alpha=0.9)
+    glow(ctx, 0, -10, 150, "teal_l", 0.45)
+    particles(ctx, t, 26, seed=4, color="teal_l", region=(-R, -R, R, R), speed=(-6, -34), size=(1.0, 2.6),
+              alpha=0.7)
+
+
+def _medallion(ctx, t, cx, cy, R, appear, base, content, label, words, seed):
+    k = ease_back(win(t, appear, appear + 0.7), 1.5)
+    if k <= 0.01:
+        return
+    with at(ctx, cx, cy, 0.8 + 0.2 * k):
+        glow(ctx, 0, 0, R * 1.5, base, 0.35 * k)
+        disc = circle_pts(0, 0, R, 72)
+        fillp(ctx, disc, "night")
+        with clip(ctx, disc):
+            content(ctx, t, R)
+        stroke(ctx, circle_pts(0, 0, R + 16, 72), 10, "gold", closed=True, taper=(0, 0), wobble=0.05, seed=seed)
+        for j in range(24):
+            a = 2 * math.pi * j / 24
+            stroke(ctx, [(math.cos(a) * (R + 26), math.sin(a) * (R + 26)),
+                         (math.cos(a) * (R + 38), math.sin(a) * (R + 38))], 4, "gold_d", taper=(0, 0))
+    text(ctx, label, cx, cy + R + 84, 56, FONT_TITLE, "g0", tracking=0.14, alpha=k)
+    for j, w in enumerate(words):
+        ka = ss(win(t, appear + 0.5 + j * 0.25, appear + 1.0 + j * 0.25))
+        if ka <= 0.01:
+            continue
+        a = math.radians(-135 + 90 * j)
+        x = cx + math.cos(a) * (R + 92)
+        y = cy + math.sin(a) * (R + 92) * 0.92 + math.sin(t * 0.8 + j) * 6
+        pulse = 0.6 + 0.4 * math.sin(t * 1.5 + j * 2.1)
+        text(ctx, w, x, y, 26, FONT_CAPS, "g2", tracking=0.1, alpha=0.9 * ka * pulse)
+
+
+@scene("trinity")
+def trinity(ctx, t, T, seg):
+    bg_studio(ctx, t, seed=50, dark=True, tone=-0.2)
+    camera(ctx, t, T, zoom=(1.0, 1.04), focus=(W / 2, H / 2))
+    _medallion(ctx, t, 380, 440, 200, 0.05 * T, "red", _c_padre, "PADRE",
+               ["PACTO", "SACRIFICIO", "JUZGA", "PERDONA"], 3)
+    _medallion(ctx, t, 960, 440, 200, 0.40 * T, "cobalt", _c_hijo, "HIJO",
+               ["CAOS EN ORDEN", "DRAGONES", "MUERTE", "RENACE"], 5)
+    _medallion(ctx, t, 1540, 440, 200, 0.72 * T, "teal", _c_espiritu, "ESPÍRITU",
+               ["CONCIENCIA", "ENGAÑO", "ARROGANCIA", "RESENTIMIENTO"], 7)
+    ui_glyphs(ctx, t, seed=13, region=(0, H * 0.85, W, H), n=6)
+
+
+# ----------------------------------------------------------------- s51 deep waters
+def _spirit(ctx, x, y, t, k=1.0):
+    """A luminous bird-like wind gliding over the water."""
+    flap = math.sin(t * 2.4)
+    with at(ctx, x, y, 1.0, 0.05 * math.sin(t * 0.9)):
+        glow(ctx, 0, 0, 300, "teal_l", 0.30 * k)
+        for side in (-1, 1):
+            tip = (side * 210, -30 - flap * 50)
+            fillp(ctx, blade((0, 0), tip, 54, bend=side * 0.2), "teal_l", alpha=0.75 * k)
+            fillp(ctx, blade((0, 0), (tip[0] * 0.9, tip[1] * 0.9), 22, bend=side * 0.2), "white", alpha=0.6 * k)
+        fillp(ctx, circle_pts(0, 0, 22, 14, ry=40), "white", alpha=0.9 * k)
+        fillp(ctx, blade((0, 20), (0, 120), 26), "teal_l", alpha=0.6 * k)
+
+
+@scene("deep_waters")
+def deep_waters(ctx, t, T, seg):
+    u = t / T
+    ctx.set_source(lingrad(ctx, 0, 0, 0, H * 0.7, [(0, "ink"), (1, "night")]))
+    ctx.paint()
+    camera(ctx, t, T, zoom=(1.0, 1.06), focus=(W / 2, H / 2))
+    rng = random.Random(3)
+    for i in range(60):
+        x, y = rng.uniform(0, W), rng.uniform(0, H * 0.4)
+        fillp(ctx, circle_pts(x, y, rng.uniform(1, 2.2), 6), "g3", alpha=0.25 + 0.2 * math.sin(t * 1.5 + i))
+
+    _sea(ctx, t, 90)
+    sx = lerp(-260, W + 260, ease_io(u))
+    sy = H * 0.36 + math.sin(t * 0.9) * 24
+    fade_in = ss(win(u, 0.04, 0.2)) * (1 - ss(win(u, 0.9, 1.0)))
+    for j in range(5):   # faint trail behind the spirit
+        stroke(ctx, [(sx - 150 - j * 40, sy + 10 + j * 6), (sx - 60 - j * 30, sy + 4)], 3, "teal_l",
+               alpha=0.18 * fade_in * (1 - j / 5), taper=(0.9, 0.0), seed=j)
+    _spirit(ctx, sx, sy, t, fade_in)
+    particles(ctx, t, 110, seed=4, color="teal_l", alpha=0.45, speed=(18, -35), size=(1.0, 2.8))
+    ui_glyphs(ctx, t, seed=14, region=(0, H * 0.55, W, H), n=5)
+
+
+# ----------------------------------------------------------------- s52 light
+@scene("light")
+def light_scene(ctx, t, T, seg):
+    u = t / T
+    k_pt = ss(win(u, 0.22, 0.34))
+    k_burst = ease_out(win(u, 0.34, 0.50), 3)
+    flood = ss(win(u, 0.42, 0.53)) * (1 - ss(win(u, 0.62, 0.82)))
+    calm = ss(win(u, 0.50, 0.90))
+    amp = lerp(95, 6, calm)
+    warm = ss(win(u, 0.50, 0.92)) * 0.9
+    sx, sy = W / 2, H * 0.44
+
+    ctx.set_source(lingrad(ctx, 0, 0, 0, H * 0.7, [(0, "ink"), (1, mix("night", "gold_d", 0.3 * k_burst))]))
+    ctx.paint()
+    camera(ctx, t, T, zoom=(1.0, 1.05), focus=(W / 2, H / 2))
+
+    if k_burst > 0:
+        glow(ctx, sx, sy, lerp(200, 1100, k_burst), "gold_l", 0.6 * k_burst)
+    _sea(ctx, t, amp, warm)
+
+    # rays burst from the point of light
+    if k_burst > 0:
+        for i in range(36):
+            ang = i * 2 * math.pi / 36 + 0.05 * math.sin(i * 3.1)
+            L = lerp(0, 1500, k_burst) * (0.6 + 0.4 * math.sin(i * 7.1))
+            fillp(ctx, [(sx, sy), (sx + math.cos(ang - 0.03) * L, sy + math.sin(ang - 0.03) * L),
+                        (sx + math.cos(ang + 0.03) * L, sy + math.sin(ang + 0.03) * L)],
+                  "gold_l", alpha=0.45 * k_burst)
+    # the point of light itself
+    if k_pt > 0 and k_burst < 0.95:
+        glow(ctx, sx, sy, 60 + 60 * k_pt, "white", 0.9 * k_pt)
+        fillp(ctx, circle_pts(sx, sy, 4 + 8 * k_pt, 14), "white", alpha=k_pt)
+
+    # the calm water mirrors the light
+    if calm > 0:
+        for j in range(16):
+            y = H * 0.6 + j * 30
+            w = (1 - j / 16) * 260 * calm
+            stroke(ctx, [(sx - w, y), (sx + w, y)], 6, "gold_l", alpha=0.75 * calm, taper=(0.2, 0.2), seed=j)
+
+    # white-gold flood, then it clears to reveal the calm sea
+    if flood > 0:
+        setc(ctx, mix("white", "gold_l", 0.45), flood)
+        ctx.paint()
+    ui_glyphs(ctx, t, seed=15, region=(0, H * 0.6, W, H), n=4, alpha=0.6 * (1 - flood))
+
+
+# ----------------------------------------------------------------- s53 hero final
+def _eye_halo(ctx, cx, cy, R, k, t):
+    """A faint ring of watching eyes behind the hero (own design, Marduk-like idea)."""
+    n = 14
+    for i in range(n):
+        a = -math.pi / 2 + (i - n / 2 + 0.5) * (2 * math.pi / n)
+        ex, ey = cx + math.cos(a) * R, cy + math.sin(a) * R * 0.82
+        kk = ss(k * 1.6 - i / n * 0.6)
+        if kk <= 0.01:
+            continue
+        blink = 0.85 + 0.15 * math.sin(t * 2 + i)
+        with at(ctx, ex, ey, 0.9, a + math.pi / 2):
+            glow(ctx, 0, 0, 46, "teal", 0.25 * kk)
+            shape(ctx, [(-30, 0), (0, -17 * blink), (30, 0), (0, 17 * blink)], "g0", 0, alpha=0.5 * kk)
+            fillp(ctx, circle_pts(0, 0, 10, 14), "teal", alpha=0.6 * kk)
+            fillp(ctx, circle_pts(0, 0, 4, 10), "ink", alpha=0.8 * kk)
+
+
+def _lids(ctx, open_k):
+    """Eyelid cover drawn in head coordinates: closed at 0, open at 1."""
+    closed = 1 - open_k
+    if closed <= 0.01:
+        return
+    lid = lerp(-18, 14, closed)
+    fillp(ctx, [(-60, -18), (80, -18), (80, lid), (-60, lid)], F.HERO["skin"])
+    stroke(ctx, [(-52, lid), (74, lid)], 4.5, "ink", taper=(0.1, 0.1))
+
+
+def _hero(ctx, x, y, s, t, open_k, wind, light):
+    c = F.HERO
+    with at(ctx, x, y, s):
+        F.bust(ctx, c, t, wind, width=1.0)
+        with at(ctx, 0, math.sin(t * 1.6) * 1.5):
+            F.head(ctx, c, "grim", t, wind)
+            if light > 0.01:
+                fillp(ctx, [(8, -96), (72, -44), (70, 6), (44, 60), (16, 88), (-4, -40)], "gold_l",
+                      alpha=0.28 * light)
+                glow(ctx, 40, -30, 190, "gold_l", 0.22 * light)
+                stroke(ctx, [(-40, -118), (10, -150), (62, -118)], 6, "gold_l", alpha=0.6 * light, taper=(0.3, 0.3))
+            _lids(ctx, open_k)
+
+
+@scene("hero_final")
+def hero_final(ctx, t, T, seg):
+    u = t / T
+    open_k = ease_io(win(u, 0.12, 0.34))     # eyes open
+    light = ss(win(u, 0.28, 0.50))           # light finds his face
+    ring = ss(win(u, 0.48, 0.70))            # the watching ring appears
+    step = ease_io(win(u, 0.62, 0.95))       # he steps forward
+    wind = 0.3 + 0.9 * step
+    hx, hy = lerp(640, 690, step), lerp(470, 500, step)
+    hs = lerp(1.45, 1.7, step)
+
+    bg_studio(ctx, t, seed=53, dark=True, tone=-0.4)
+    camera(ctx, t, T, zoom=(1.0, 1.12), focus=(W * 0.42, H * 0.5))
+    glow(ctx, W * 0.7, H * 0.45, 900, "teal_d", 0.35)
+
+    # the huge dark-teal dragon, facing him from the right
+    path = [(W + 400, H + 120), (W * 0.98, H * 0.86), (W * 0.84, H * 0.66), (W * 0.74, H * 0.5),
+            (W * 0.64, H * 0.42), (W * 0.58, H * 0.40)]
+    F.serpent(ctx, path, t, thick=120, body=mix("teal_d", "ink", 0.35), belly="sea_l", spikes_c="ink2",
+              head_size=1.25, seed=21, wave=18, open_jaw=0.55)
+
+    if light > 0:
+        beam = [(W * 0.62, -40), (W * 0.80, -40), (hx + 150, hy - 60), (hx - 40, hy + 40)]
+        fillp(ctx, beam, "gold_l", alpha=0.16 * light)
+
+    _eye_halo(ctx, hx, hy - 30, 330 * hs / 1.45, ring, t)
+    speedlines(ctx, hx, hy, t, 30, 420, 1500, "gold_l", alpha=0.12 * step)
+    _hero(ctx, hx, hy, hs, t, open_k, wind, light)
+    particles(ctx, t, 70, seed=17, color="gold_l", alpha=0.55, speed=(-8, -46), size=(1.0, 3.0))
+    ui_glyphs(ctx, t, seed=16, n=8)

@@ -161,22 +161,29 @@ def battle(ctx, t, T, seg):
                 ctx.paint_with_alpha(a)
                 ctx.restore()
             ctx.restore()
-            # Marduk leaping in from the left
-            mx = lerp(-400, W * 0.42, ease_out(k_charge, 2))
-            my = H * 0.55 - math.sin(k_charge * math.pi) * 160
+            # Marduk charging in from the lower left, spear of light raised
+            mx = lerp(-300, W * 0.30, ease_out(k_charge, 2))
+            my = lerp(H * 0.95, H * 0.62, ease_out(k_charge, 2))
             if k_world < 0.4:
-                speedlines(ctx, W * 0.5, H * 0.45, t, 50, 380, 1400, "teal_l" if k_flash > 0 else "ink",
+                speedlines(ctx, W * 0.55, H * 0.4, t, 50, 380, 1400, "teal_l" if k_flash > 0 else "g4",
                            alpha=0.35 * (1 - k_world * 2.5))
-                with at(ctx, mx, my, 0.9, -0.25 * (1 - k_flash)):
-                    F.person(ctx, 0, 200, 420, "cobalt", "cobalt_d", "walk", t, arm_up=1.0, head_c=mix("skin2", "gold", .2))
-                    stroke(ctx, [(-40, -230), (60 + k_flash * 380, -380 - k_flash * 60)], 14, "teal_l", taper=(0.1, 0.0))
-                    glow(ctx, 60 + k_flash * 380, -380, 120, "teal", 0.7)
+                ctx.push_group()
+                tip = (lerp(140, 760, ease_out(k_flash, 2)), lerp(-420, -560, ease_out(k_flash, 2)))
+                with at(ctx, mx, my, 0.85, -0.18 + 0.1 * k_flash):
+                    F.limb(ctx, (120, 170), (220, 40), (300, -80), 52, 40, "cobalt", "cobalt_d", 5)
+                    marduk(ctx, 0, 0, 1.0, t, eyes=1.0, mouth_glow=0.6, expr="shout")
+                    F.hand(ctx, 300, -80, -0.6, 1.8, "gold", "fist")
+                    stroke(ctx, [(240, 10), tip], 16, "teal_l", taper=(0.0, 0.0))
+                    stroke(ctx, [(240, 10), tip], 6, "white", taper=(0.0, 0.0))
+                    glow(ctx, tip[0], tip[1], 150, "teal", 0.8)
+                ctx.pop_group_to_source()
+                ctx.paint_with_alpha(1 - ss(k_world * 3))
     if 0 < k_flash < 1:
         setc(ctx, "white", (1 - k_flash) ** 2 * 0.9)
         ctx.paint()
     if k_world > 0:
         # the made world: dome of sky (upper half of the beast) over the earth (lower half)
-        a = ss(k_world * 1.5)
+        a = ss((k_world - 0.3) * 2.2)
         dome = [(W * 0.08, H * 0.72)] + [(W / 2 + math.cos(u) * W * 0.42, H * 0.72 - math.sin(u) * H * 0.55)
                                           for u in [math.pi - i * math.pi / 30 for i in range(31)]]
         shape(ctx, dome, mix("sea_l", "cobalt_l", 0.5), 6, alpha=a)
