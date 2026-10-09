@@ -76,7 +76,7 @@ CUES = [
     ("tabula", "copia medievale", 0.0, "pergamena", -14, None),
     ("tabula", "Tabula Peutingeriana", 0.0, "penna_oca", -18, None),
     ("orazio", None, 0.3, "penna_oca", -18, None),
-    ("orazio", "percorse l'Appia", 0.0, "passi_ghiaia", -20, None),
+    ("orazio", "andò da Roma", 0.0, "passi_ghiaia", -20, None),
     ("orazio", "osti scortesi", 0.0, "mercato", -24, 3.0),
     ("orazio", "di notte", 0.0, "acqua_canale", -20, None),
     ("orazio", "zanzare", 0.0, "zanzara", -16, None),
