@@ -162,6 +162,9 @@ def draw_frame(tl, T):
 # ----------------------------------------------------------------- rendering
 def _render_chunk(args):
     a, b, out = args
+    if os.path.exists(out) and os.path.getsize(out) > 0:
+        return out                      # resumable: finished chunks are kept
+    final, out = out, out + ".tmp.mp4"
     tl = timeline()
     proc = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "bgra", "-s",
                              f"{W}x{H}", "-r", str(FPS), "-i", "-", "-c:v", "libx264", "-preset", "medium",
@@ -171,7 +174,8 @@ def _render_chunk(args):
         proc.stdin.write(bytes(s.get_data()))
     proc.stdin.close()
     proc.wait()
-    return out
+    os.replace(out, final)
+    return final
 
 
 def render(t0=0.0, t1=None, procs=4, name="video"):
