@@ -1336,7 +1336,7 @@ def miliario(pen, t, T, appear, vanish):
     t_km = C("circa un chilometro")
     t_col = C("ecco una colonna")
     t_mil = C("il miliario.")
-    t_manc = C("quanta strada")
+    t_manc = C("quante miglia")
     t_cost = C("chi l'aveva")
     t_20 = C("Nel venti")
     t_aug = C("Augusto")
