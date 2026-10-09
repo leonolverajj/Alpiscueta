@@ -1,0 +1,1328 @@
+1
+00:00:00,600 --> 00:00:02,120
+Los imperios caen.
+
+2
+00:00:02,200 --> 00:00:05,000
+Los castillos se desmoronan.
+
+3
+00:00:05,319 --> 00:00:09,279
+Las murallas más altas terminan convertidas en polvo.
+
+4
+00:00:09,639 --> 00:00:12,599
+Pero hay algo que ha sobrevivido a todos ellos.
+
+5
+00:00:13,160 --> 00:00:17,000
+No es una espada, ni una corona, ni una piedra.
+
+6
+00:00:17,640 --> 00:00:19,160
+Es un libro.
+
+7
+00:00:20,620 --> 00:00:27,020
+Un libro extraño, contradictorio, cosido a mano a lo largo de miles de años por autores
+
+8
+00:00:27,020 --> 00:00:28,860
+que nunca se conocieron.
+
+9
+00:00:29,180 --> 00:00:31,980
+Un libro que movió civilizaciones enteras.
+
+10
+00:00:32,460 --> 00:00:34,140
+Y la pregunta es inevitable:
+
+11
+00:00:34,700 --> 00:00:35,460
+¿por qué?
+
+12
+00:00:35,740 --> 00:00:38,700
+¿Qué tiene ese libro que no tenga la piedra?
+
+13
+00:00:40,171 --> 00:00:42,851
+Esta es la historia de una idea.
+
+14
+00:00:43,131 --> 00:00:49,611
+La más antigua, la más peligrosa y quizá la más necesaria de todas:
+
+15
+00:00:49,691 --> 00:00:51,371
+la idea de Dios.
+
+16
+00:00:59,225 --> 00:01:06,145
+En 2017, en un teatro de Toronto, el psicólogo clínico Jordan Peterson subió al escenario
+
+17
+00:01:06,145 --> 00:01:08,105
+para hacer algo inusual:
+
+18
+00:01:08,185 --> 00:01:12,745
+leer la Biblia, no como un predicador ni como un burlón,
+
+19
+00:01:12,825 --> 00:01:16,185
+sino como un explorador frente a un mapa antiguo.
+
+20
+00:01:16,505 --> 00:01:19,585
+Para él, estos relatos son un misterio.
+
+21
+00:01:19,865 --> 00:01:25,385
+No sabemos bien cómo nacieron, cómo se ensamblaron, ni por qué tuvieron un impacto
+
+22
+00:01:25,385 --> 00:01:26,665
+tan descomunal.
+
+23
+00:01:28,128 --> 00:01:31,008
+Su propuesta era sencilla y audaz:
+
+24
+00:01:31,088 --> 00:01:33,568
+acercarse con mente de principiante.
+
+25
+00:01:34,048 --> 00:01:38,128
+Explicar todo lo posible con la razón, con la biología,
+
+26
+00:01:38,208 --> 00:01:39,355
+con la evolución.
+
+27
+00:01:39,355 --> 00:01:39,541
+.
+
+28
+00:01:39,541 --> 00:01:39,728
+.
+
+29
+00:01:39,768 --> 00:01:44,128
+y dejar flotando, con respeto, lo que no se puede reducir.
+
+30
+00:01:44,688 --> 00:01:48,928
+Porque quien desprecia el fenómeno religioso sin tomárselo en serio,
+
+31
+00:01:49,008 --> 00:01:51,328
+en realidad nunca lo ha mirado.
+
+32
+00:01:56,777 --> 00:02:01,337
+Para entender por qué esto importa hay que viajar al siglo diecinueve,
+
+33
+00:02:01,417 --> 00:02:04,297
+con un filósofo alemán de bigote feroz:
+
+34
+00:02:04,377 --> 00:02:05,577
+Friedrich Nietzsche.
+
+35
+00:02:06,137 --> 00:02:09,737
+Fue el crítico más devastador del cristianismo dogmático.
+
+36
+00:02:10,217 --> 00:02:13,497
+Y sin embargo, pensaba algo sorprendente:
+
+37
+00:02:13,537 --> 00:02:17,977
+que sin el cristianismo, la ciencia jamás habría despegado.
+
+38
+00:02:19,436 --> 00:02:24,716
+Durante mil años, la mente europea se entrenó para interpretarlo todo,
+
+39
+00:02:24,796 --> 00:02:29,276
+absolutamente todo, dentro de un solo marco coherente.
+
+40
+00:02:29,596 --> 00:02:33,596
+Ese entrenamiento forjó un espíritu obsesionado con la verdad.
+
+41
+00:02:34,156 --> 00:02:39,116
+Y un día, ese espíritu se volvió contra sus propias raíces y preguntó:
+
+42
+00:02:39,676 --> 00:02:42,076
+¿y por qué creímos todo esto?
+
+43
+00:02:43,532 --> 00:02:48,652
+Es como despertar una mañana y darte cuenta de que pones un árbol de Navidad cada
+
+44
+00:02:48,652 --> 00:02:49,159
+año.
+
+45
+00:02:49,159 --> 00:02:49,345
+.
+
+46
+00:02:49,345 --> 00:02:49,532
+.
+
+47
+00:02:49,612 --> 00:02:50,572
+sin saber por qué.
+
+48
+00:02:51,052 --> 00:02:55,372
+El ritual sobrevive mucho después de que las razones se olvidan.
+
+49
+00:02:56,839 --> 00:03:00,359
+Entonces Nietzsche anunció que Dios había muerto.
+
+50
+00:03:00,999 --> 00:03:05,639
+Pero no lo dijo como un grito de victoria, sino como una advertencia.
+
+51
+00:03:06,359 --> 00:03:12,359
+Sin esa piedra angular, la civilización oscilaría con violencia entre dos abismos:
+
+52
+00:03:12,439 --> 00:03:15,906
+el nihilismo, la sensación de que nada importa.
+
+53
+00:03:15,906 --> 00:03:16,092
+.
+
+54
+00:03:16,092 --> 00:03:16,279
+.
+
+55
+00:03:16,319 --> 00:03:21,239
+y las ideologías, que prometen sentido a cambio de obediencia ciega.
+
+56
+00:03:22,685 --> 00:03:28,765
+Y predijo que, en el siglo veinte, millones de personas morirían por esa sustitución.
+
+57
+00:03:29,405 --> 00:03:30,685
+No se equivocó.
+
+58
+00:03:31,005 --> 00:03:35,165
+Peterson describe las ideologías como religiones lisiadas:
+
+59
+00:03:35,245 --> 00:03:38,685
+les falta un brazo y una pierna, pero todavía cojean.
+
+60
+00:03:39,165 --> 00:03:41,085
+Dan seguridad y una tribu.
+
+61
+00:03:41,085 --> 00:03:41,245
+.
+
+62
+00:03:41,245 --> 00:03:41,405
+.
+
+63
+00:03:41,445 --> 00:03:44,605
+a costa de deformar la verdad que las sostiene.
+
+64
+00:03:46,076 --> 00:03:51,036
+Por eso la gente reacciona con tanta furia cuando alguien cuestiona sus creencias.
+
+65
+00:03:51,596 --> 00:03:57,036
+Es como estar sobre una balsa en medio del océano mientras alguien arranca los troncos,
+
+66
+00:03:57,116 --> 00:03:58,356
+uno por uno.
+
+67
+00:03:58,716 --> 00:03:59,676
+La pregunta es:
+
+68
+00:04:00,156 --> 00:04:01,356
+¿ahogarse en qué?
+
+69
+00:04:01,996 --> 00:04:04,876
+¿Qué hay en esa agua que nos aterra tanto?
+
+70
+00:04:10,232 --> 00:04:12,752
+Imagina tu mente como una isla.
+
+71
+00:04:13,032 --> 00:04:16,792
+En el centro está lo que sabes y puedes decir con palabras.
+
+72
+00:04:17,272 --> 00:04:19,592
+Alrededor, una niebla:
+
+73
+00:04:19,672 --> 00:04:22,552
+cosas que intuyes, pero no logras explicar.
+
+74
+00:04:23,112 --> 00:04:26,232
+Y más allá de la niebla, el océano:
+
+75
+00:04:26,272 --> 00:04:28,512
+lo desconocido absoluto.
+
+76
+00:04:28,792 --> 00:04:29,992
+El caos.
+
+77
+00:04:31,454 --> 00:04:32,534
+¿Te ha pasado?
+
+78
+00:04:32,814 --> 00:04:38,281
+Discutes con alguien cercano, la tensión sube, y de pronto la otra persona rompe
+
+79
+00:04:38,281 --> 00:04:38,947
+a llorar.
+
+80
+00:04:38,947 --> 00:04:39,161
+.
+
+81
+00:04:39,161 --> 00:04:39,374
+.
+
+82
+00:04:39,414 --> 00:04:43,934
+y justo entonces descubre qué era lo que realmente le dolía.
+
+83
+00:04:44,254 --> 00:04:46,894
+Lo sabía, pero no podía decirlo.
+
+84
+00:04:47,454 --> 00:04:49,934
+Los pensamientos suben desde el cuerpo:
+
+85
+00:04:50,054 --> 00:04:53,854
+primero como emociones, como imágenes, como actos.
+
+86
+00:04:55,315 --> 00:04:59,435
+Esa niebla es un sueño en el que todos vivimos inmersos.
+
+87
+00:04:59,715 --> 00:05:03,395
+Y ahí habitan los místicos y los artistas:
+
+88
+00:05:03,475 --> 00:05:07,635
+los mediadores entre lo desconocido y lo que sabemos con certeza.
+
+89
+00:05:08,275 --> 00:05:13,395
+Cuando lo que pensamos se desconecta de ese sueño, enfermamos por dentro.
+
+90
+00:05:14,866 --> 00:05:18,066
+Sigmund Freud popularizó una idea inquietante:
+
+91
+00:05:18,706 --> 00:05:20,586
+no eres un solo yo.
+
+92
+00:05:20,866 --> 00:05:25,906
+Eres una colección de subpersonalidades vivas, cada una con sus deseos,
+
+93
+00:05:25,986 --> 00:05:28,306
+sus miedos y sus argumentos.
+
+94
+00:05:28,333 --> 00:05:31,106
+Y tu control sobre ellas es limitado.
+
+95
+00:05:32,562 --> 00:05:35,242
+Los antiguos les llamaban dioses.
+
+96
+00:05:35,522 --> 00:05:36,722
+Piensa en la ira.
+
+97
+00:05:37,202 --> 00:05:41,922
+Cuando te posee, tiene su propia voz y dice lo que quiere decir,
+
+98
+00:05:41,962 --> 00:05:45,362
+aunque no tenga nada que ver contigo cuando eres sensato.
+
+99
+00:05:45,922 --> 00:05:47,922
+Y no solo te habita a ti:
+
+100
+00:05:48,042 --> 00:05:50,482
+habita a todos, desde siempre.
+
+101
+00:05:51,122 --> 00:05:53,522
+Los romanos le pusieron nombre:
+
+102
+00:05:53,682 --> 00:05:54,562
+Marte.
+
+103
+00:05:56,031 --> 00:06:02,191
+Carl Jung, discípulo y después crítico de Freud, encontró en los sueños de sus pacientes
+
+104
+00:06:02,191 --> 00:06:06,151
+ecos de mitos antiguos que ellos jamás habían leído.
+
+105
+00:06:06,431 --> 00:06:09,151
+Y llegó a una conclusión poderosa:
+
+106
+00:06:09,231 --> 00:06:12,831
+el sueño es el lugar donde nace el pensamiento.
+
+107
+00:06:13,391 --> 00:06:14,591
+No esconde nada.
+
+108
+00:06:14,831 --> 00:06:19,871
+Hace su mejor esfuerzo por expresar algo que todavía no sabemos decir.
+
+109
+00:06:21,328 --> 00:06:26,048
+Peterson cuenta la historia de un tallador indígena de la costa del Pacífico,
+
+110
+00:06:26,128 --> 00:06:28,448
+heredero de una tradición milenaria.
+
+111
+00:06:29,088 --> 00:06:32,048
+Él sueña con los animales que va a tallar:
+
+112
+00:06:32,128 --> 00:06:34,488
+los ve vivos, moviéndose.
+
+113
+00:06:34,768 --> 00:06:40,208
+Y cuando se atora con una pieza, sus abuelos se le aparecen en sueños para enseñarle.
+
+114
+00:06:41,662 --> 00:06:43,342
+Jung lo resumió así:
+
+115
+00:06:43,982 --> 00:06:47,902
+todos vivimos un mito, pero muy pocos sabemos cuál.
+
+116
+00:06:48,462 --> 00:06:49,929
+Y deberías saberlo.
+
+117
+00:06:49,929 --> 00:06:50,115
+.
+
+118
+00:06:50,115 --> 00:06:50,302
+.
+
+119
+00:06:50,422 --> 00:06:52,542
+porque quizá es una tragedia.
+
+120
+00:06:53,102 --> 00:06:55,582
+Y quizá no quieres que lo sea.
+
+121
+00:07:00,933 --> 00:07:05,013
+¿Por qué cruzamos medio mundo para pararnos frente a una pintura?
+
+122
+00:07:05,333 --> 00:07:08,813
+¿Por qué un cuadro del Renacimiento vale una fortuna?
+
+123
+00:07:09,253 --> 00:07:15,253
+Los artistas nos observan, captan patrones que no sabemos nombrar y nos los devuelven.
+
+124
+00:07:15,733 --> 00:07:20,213
+Nos enseñan a ver, aunque no sepamos qué estamos aprendiendo.
+
+125
+00:07:21,659 --> 00:07:23,619
+Con la música pasa igual.
+
+126
+00:07:23,899 --> 00:07:29,499
+Nadie la cuestiona, pero en un concierto, cuando la multitud se mueve como un solo
+
+127
+00:07:29,499 --> 00:07:32,939
+cuerpo, sientes algo casi religioso.
+
+128
+00:07:33,259 --> 00:07:36,592
+La música está hecha de patrones sobre patrones.
+
+129
+00:07:36,592 --> 00:07:36,806
+.
+
+130
+00:07:36,806 --> 00:07:37,019
+.
+
+131
+00:07:37,099 --> 00:07:38,699
+como la realidad misma.
+
+132
+00:07:40,165 --> 00:07:42,565
+Decimos que la ficción no es verdad.
+
+133
+00:07:42,645 --> 00:07:45,045
+Pero piensa en los números:
+
+134
+00:07:45,125 --> 00:07:48,965
+son una abstracción, y nadie diría que son falsos;
+
+135
+00:07:49,085 --> 00:07:51,285
+con ellos movemos el mundo.
+
+136
+00:07:51,605 --> 00:07:53,552
+Hamlet es ficción, sí.
+
+137
+00:07:53,552 --> 00:07:53,738
+.
+
+138
+00:07:53,738 --> 00:07:53,925
+.
+
+139
+00:07:54,005 --> 00:07:59,485
+pero quizá es más verdadero que un periódico, porque extrae algo que nos pertenece
+
+140
+00:07:59,485 --> 00:08:00,325
+a todos.
+
+141
+00:08:01,779 --> 00:08:07,219
+La vida es una cadena ininterrumpida de tres mil quinientos millones de años.
+
+142
+00:08:07,539 --> 00:08:12,499
+Cada uno de tus ancestros logró reproducirse, sin una sola excepción.
+
+143
+00:08:12,979 --> 00:08:17,139
+Y durante todo ese tiempo nos hemos estado observando:
+
+144
+00:08:17,299 --> 00:08:22,299
+imitando, actuando, dramatizando, contando historias.
+
+145
+00:08:22,579 --> 00:08:28,739
+Destilando, generación tras generación, el patrón de lo que significa vivir bien.
+
+146
+00:08:30,186 --> 00:08:34,426
+Hay cuentos de hadas que se han rastreado diez mil años atrás.
+
+147
+00:08:34,746 --> 00:08:37,866
+Las culturas antiguas no cambiaban rápido:
+
+148
+00:08:37,946 --> 00:08:41,226
+su gran logro era permanecer, transmitir.
+
+149
+00:08:41,786 --> 00:08:48,026
+Y los relatos de la Biblia viven justo ahí, a medio camino entre el sueño y el conocimiento
+
+150
+00:08:48,026 --> 00:08:48,906
+articulado.
+
+151
+00:08:54,263 --> 00:08:55,543
+Piensa en Moisés.
+
+152
+00:08:56,023 --> 00:09:00,023
+Durante años, en el desierto, fue juez de su pueblo:
+
+153
+00:09:00,103 --> 00:09:04,183
+resolviendo pleitos, buscando la paz una y otra vez.
+
+154
+00:09:04,663 --> 00:09:08,343
+Y para hacer la paz, tienes que entender qué es la paz.
+
+155
+00:09:08,823 --> 00:09:10,743
+¿Qué principios la producen?
+
+156
+00:09:12,194 --> 00:09:18,114
+Después de diez mil disputas, un día esos principios estallan en tu conciencia como
+
+157
+00:09:18,114 --> 00:09:19,234
+una revelación.
+
+158
+00:09:19,874 --> 00:09:24,434
+Las reglas que ya se estaban viviendo, por fin escritas en piedra.
+
+159
+00:09:25,074 --> 00:09:26,994
+Así nace la ley:
+
+160
+00:09:27,074 --> 00:09:28,674
+de abajo hacia arriba.
+
+161
+00:09:29,154 --> 00:09:31,954
+Primero vivida, después dicha.
+
+162
+00:09:33,417 --> 00:09:36,337
+Ahora imagina una tribu de chimpancés.
+
+163
+00:09:36,617 --> 00:09:41,297
+Para ellos, el poder está en el macho dominante, no en una idea.
+
+164
+00:09:41,577 --> 00:09:44,857
+Pero los humanos hicimos algo extraordinario:
+
+165
+00:09:45,057 --> 00:09:49,977
+observamos a muchos líderes a lo largo de los siglos y extrajimos el principio que
+
+166
+00:09:49,977 --> 00:09:50,857
+había detrás.
+
+167
+00:09:51,257 --> 00:09:53,177
+Lo separamos de las personas.
+
+168
+00:09:53,417 --> 00:09:58,297
+Y a ese ideal abstracto, personificado, lo llamamos Dios.
+
+169
+00:09:59,759 --> 00:10:02,559
+De ahí nació una idea política brillante.
+
+170
+00:10:03,199 --> 00:10:06,719
+Roma quería adorar al emperador como a un dios.
+
+171
+00:10:07,039 --> 00:10:09,119
+Los primeros cristianos respondieron:
+
+172
+00:10:09,679 --> 00:10:13,519
+nunca confundas al soberano con el principio de soberanía.
+
+173
+00:10:14,079 --> 00:10:17,359
+Incluso el rey está por debajo de algo más alto.
+
+174
+00:10:17,919 --> 00:10:21,039
+Sin esa idea, el líder se vuelve absoluto.
+
+175
+00:10:21,519 --> 00:10:25,519
+Y ya vimos lo que pasa cuando nada está por encima del poder.
+
+176
+00:10:30,968 --> 00:10:36,408
+Hace miles de años, en Mesopotamia, las tribus empezaron a vivir juntas,
+
+177
+00:10:36,488 --> 00:10:39,168
+y cada una traía a su propio dios.
+
+178
+00:10:39,448 --> 00:10:40,048
+¿Guerra?
+
+179
+00:10:40,248 --> 00:10:41,048
+Sale cara.
+
+180
+00:10:41,528 --> 00:10:42,888
+Mejor negociar:
+
+181
+00:10:42,968 --> 00:10:46,568
+tomar lo mejor del dios de una tribu y del dios de la otra,
+
+182
+00:10:46,648 --> 00:10:50,728
+y extraer uno nuevo, más abstracto, que abarque a ambos.
+
+183
+00:10:51,208 --> 00:10:54,808
+Por eso el dios Marduk tenía cincuenta nombres.
+
+184
+00:10:56,266 --> 00:11:00,586
+Un día, los dioses enfrentan una amenaza terrible:
+
+185
+00:11:00,626 --> 00:11:04,066
+Tiamat, el dragón de las aguas saladas.
+
+186
+00:11:04,346 --> 00:11:08,466
+El caos primordial, que regresa para devorarlo todo.
+
+187
+00:11:08,746 --> 00:11:12,826
+Su nombre está emparentado con una palabra hebrea del Génesis:
+
+188
+00:11:12,906 --> 00:11:17,706
+tehom, el abismo sobre el que se movía el espíritu de Dios.
+
+189
+00:11:19,160 --> 00:11:21,240
+Entonces aparece Marduk.
+
+190
+00:11:21,720 --> 00:11:27,120
+Tiene ojos alrededor de toda la cabeza y pronuncia palabras mágicas.
+
+191
+00:11:27,400 --> 00:11:30,440
+Los dioses lo eligen rey para que los salve.
+
+192
+00:11:31,893 --> 00:11:34,373
+Marduk sale al encuentro del dragón.
+
+193
+00:11:34,853 --> 00:11:35,733
+Lo enfrenta.
+
+194
+00:11:36,213 --> 00:11:37,893
+Lo corta en pedazos.
+
+195
+00:11:37,893 --> 00:11:38,053
+.
+
+196
+00:11:38,053 --> 00:11:38,213
+.
+
+197
+00:11:38,253 --> 00:11:42,853
+y con sus restos construye el mundo donde viven los seres humanos.
+
+198
+00:11:44,312 --> 00:11:46,432
+Y aquí viene lo asombroso.
+
+199
+00:11:46,712 --> 00:11:51,832
+El emperador de Mesopotamia solo era legítimo si actuaba como Marduk:
+
+200
+00:11:51,912 --> 00:11:57,672
+si veía en todas direcciones y si hablaba con verdad para transformar el caos en
+
+201
+00:11:57,672 --> 00:11:58,232
+orden.
+
+202
+00:11:58,552 --> 00:12:03,192
+Hace miles de años ya habían dramatizado la esencia del liderazgo.
+
+203
+00:12:04,646 --> 00:12:07,846
+Porque el caos no es solo un monstruo de leyenda.
+
+204
+00:12:08,406 --> 00:12:11,686
+Es lo que aparece cuando tu mundo se derrumba:
+
+205
+00:12:11,766 --> 00:12:15,846
+una traición, una pérdida, un sueño que muere.
+
+206
+00:12:16,486 --> 00:12:19,286
+Es todo a la vez, y es demasiado.
+
+207
+00:12:19,766 --> 00:12:24,486
+Y lo percibimos con los mismos sistemas que nuestros ancestros usaban para detectar
+
+208
+00:12:24,486 --> 00:12:26,486
+serpientes y depredadores.
+
+209
+00:12:27,932 --> 00:12:33,012
+Por eso nos congelamos ante el miedo, como el conejo frente a la serpiente.
+
+210
+00:12:33,292 --> 00:12:37,292
+Como quien mira a Medusa y queda convertido en piedra.
+
+211
+00:12:38,758 --> 00:12:43,318
+La lección de Marduk es la misma que la de la psicoterapia moderna:
+
+212
+00:12:43,398 --> 00:12:45,798
+no esperes a que el monstruo te encuentre.
+
+213
+00:12:46,358 --> 00:12:47,478
+Abre los ojos.
+
+214
+00:12:47,878 --> 00:12:49,318
+Ordena tus palabras.
+
+215
+00:12:49,798 --> 00:12:50,918
+Sal a su encuentro.
+
+216
+00:12:51,478 --> 00:12:55,665
+Pártelo en pedazos manejables, enfréntalos uno a uno.
+
+217
+00:12:55,665 --> 00:12:55,851
+.
+
+218
+00:12:55,851 --> 00:12:56,038
+.
+
+219
+00:12:56,078 --> 00:12:58,598
+y construye tu mundo con lo que queda.
+
+220
+00:13:03,959 --> 00:13:05,359
+Mira esta imagen.
+
+221
+00:13:05,639 --> 00:13:09,879
+Cada línea de abajo es un versículo de la Biblia, y cada arco,
+
+222
+00:13:09,959 --> 00:13:12,359
+una referencia cruzada a otro versículo.
+
+223
+00:13:12,839 --> 00:13:15,239
+Son sesenta y cinco mil.
+
+224
+00:13:15,559 --> 00:13:19,159
+Peterson lo llama el primer hipertexto de la historia:
+
+225
+00:13:19,239 --> 00:13:23,479
+un libro tan entretejido que podrías recorrerlo para siempre.
+
+226
+00:13:24,946 --> 00:13:26,546
+Los posmodernos dijeron:
+
+227
+00:13:27,026 --> 00:13:32,226
+si un texto admite infinitas interpretaciones, ¿cómo sabes que una es mejor que
+
+228
+00:13:32,226 --> 00:13:32,626
+otra?
+
+229
+00:13:33,186 --> 00:13:36,973
+Y si el mundo es infinitamente más complejo que un texto.
+
+230
+00:13:36,973 --> 00:13:37,159
+.
+
+231
+00:13:37,159 --> 00:13:37,346
+.
+
+232
+00:13:37,426 --> 00:13:38,946
+nada vale más que nada.
+
+233
+00:13:39,666 --> 00:13:43,146
+Pero esa respuesta te deja ahogándote en el caos.
+
+234
+00:13:43,426 --> 00:13:45,746
+Y el caos no es neutral:
+
+235
+00:13:45,826 --> 00:13:50,226
+trae ansiedad, depresión, y te desgasta por dentro.
+
+236
+00:13:51,680 --> 00:13:52,960
+La salida es esta:
+
+237
+00:13:53,520 --> 00:13:58,160
+no buscamos cualquier interpretación, buscamos una que funcione.
+
+238
+00:13:58,640 --> 00:14:02,800
+Que reduzca el sufrimiento hoy, mañana y dentro de un año.
+
+239
+00:14:03,200 --> 00:14:07,280
+Que tome en cuenta a tu yo del futuro, que es casi otra persona.
+
+240
+00:14:07,680 --> 00:14:09,840
+Que te permita convivir con los demás.
+
+241
+00:14:10,320 --> 00:14:12,480
+Y que no choque contra la realidad.
+
+242
+00:14:13,040 --> 00:14:18,000
+Con esas restricciones, las interpretaciones posibles se vuelven muy pocas.
+
+243
+00:14:19,459 --> 00:14:22,259
+Los hechos son como un campo abierto:
+
+244
+00:14:22,299 --> 00:14:25,579
+te dicen qué hay, pero no cómo cruzarlo.
+
+245
+00:14:25,859 --> 00:14:28,259
+Para caminar necesitas una dirección.
+
+246
+00:14:28,739 --> 00:14:31,299
+Y la neurociencia da una pista:
+
+247
+00:14:31,379 --> 00:14:36,899
+no sentimos emoción positiva por alcanzar una meta, sino por avanzar hacia ella.
+
+248
+00:14:38,357 --> 00:14:42,517
+Entonces, cuanto más noble la meta, mejor la vida.
+
+249
+00:14:43,077 --> 00:14:44,837
+Porque la vida es dura:
+
+250
+00:14:44,917 --> 00:14:48,037
+duele, termina, todos morimos.
+
+251
+00:14:48,597 --> 00:14:51,157
+Sin una meta noble, ¿cómo soportarlo?
+
+252
+00:14:51,797 --> 00:14:55,317
+Esa meta es el pan sin el cual nadie puede vivir.
+
+253
+00:14:55,797 --> 00:14:58,357
+Y Marduk ya nos dio su forma:
+
+254
+00:14:58,437 --> 00:15:04,677
+presta atención, habla con verdad, enfrenta el caos, haz un mundo mejor.
+
+255
+00:15:10,036 --> 00:15:14,556
+Para los antiguos, el mundo era un disco bajo una gran cúpula.
+
+256
+00:15:14,836 --> 00:15:16,916
+Sobre la cúpula, agua:
+
+257
+00:15:16,996 --> 00:15:18,036
+por eso llueve.
+
+258
+00:15:18,356 --> 00:15:20,676
+Bajo la tierra, agua dulce:
+
+259
+00:15:20,756 --> 00:15:23,156
+por eso, al cavar, encuentras pozos.
+
+260
+00:15:23,636 --> 00:15:26,356
+Y en los bordes, el océano salado.
+
+261
+00:15:26,676 --> 00:15:27,636
+No es ciencia.
+
+262
+00:15:28,036 --> 00:15:30,156
+Es el mundo tal como se ve.
+
+263
+00:15:30,436 --> 00:15:33,956
+Una verdad de la experiencia, no del laboratorio.
+
+264
+00:15:35,412 --> 00:15:38,612
+Y en su estructura, la Biblia es una comedia:
+
+265
+00:15:38,692 --> 00:15:40,092
+tiene final feliz.
+
+266
+00:15:40,372 --> 00:15:45,892
+Empieza en el paraíso, ocurre una catástrofe y la humanidad cae en la historia:
+
+267
+00:15:45,932 --> 00:15:49,012
+en el límite, el sufrimiento y la muerte.
+
+268
+00:15:49,572 --> 00:15:52,772
+Pero todo apunta hacia un estado que lo trasciende.
+
+269
+00:15:54,231 --> 00:15:56,951
+Ni siquiera se escribió como un solo libro.
+
+270
+00:15:57,431 --> 00:16:03,031
+Los estudiosos distinguen al menos cuatro fuentes, tejidas por editores que no querían
+
+271
+00:16:03,031 --> 00:16:04,471
+perder nada valioso.
+
+272
+00:16:05,111 --> 00:16:09,138
+El primer capítulo del Génesis es más reciente que el segundo.
+
+273
+00:16:09,138 --> 00:16:09,324
+.
+
+274
+00:16:09,324 --> 00:16:09,511
+.
+
+275
+00:16:09,551 --> 00:16:14,071
+y aun así lo pusieron primero, porque trata de lo más fundamental.
+
+276
+00:16:19,432 --> 00:16:21,752
+El evangelio de Juan comienza así:
+
+277
+00:16:22,472 --> 00:16:27,032
+en el principio era el Verbo, y el Verbo estaba con Dios,
+
+278
+00:16:27,072 --> 00:16:28,792
+y el Verbo era Dios.
+
+279
+00:16:29,592 --> 00:16:30,312
+El Verbo:
+
+280
+00:16:30,712 --> 00:16:31,512
+el Logos.
+
+281
+00:16:31,992 --> 00:16:35,512
+Peterson lo entiende como algo parecido a la conciencia,
+
+282
+00:16:35,552 --> 00:16:38,872
+la capacidad de iluminar, de ver y de nombrar.
+
+283
+00:16:39,432 --> 00:16:42,392
+Porque, ¿qué existe si nadie lo experimenta?
+
+284
+00:16:42,952 --> 00:16:47,192
+Sin conciencia no hay duración, ni escala, ni historia.
+
+285
+00:16:48,648 --> 00:16:53,048
+Y en el primer capítulo del Génesis se afirma, sin titubeos,
+
+286
+00:16:53,088 --> 00:16:56,568
+que el hombre y la mujer fueron hechos a imagen de lo divino.
+
+287
+00:16:57,048 --> 00:16:58,128
+Los dos.
+
+288
+00:16:58,408 --> 00:17:03,608
+Esa chispa que convierte el caos en realidad vive en cada persona.
+
+289
+00:17:05,064 --> 00:17:08,384
+Sobre esa idea descansa nuestro sistema legal.
+
+290
+00:17:08,664 --> 00:17:13,304
+Incluso el peor criminal conserva un valor que la ley no puede pisotear.
+
+291
+00:17:13,864 --> 00:17:18,264
+Somos conscientes, decidimos, somos responsables.
+
+292
+00:17:18,904 --> 00:17:22,024
+Cada uno de nosotros es un mundo entero.
+
+293
+00:17:23,491 --> 00:17:24,891
+¿Y si lo negamos?
+
+294
+00:17:25,171 --> 00:17:28,011
+Dostoyevski lo exploró en Crimen y castigo.
+
+295
+00:17:28,291 --> 00:17:33,731
+Raskólnikov decide que los demás no tienen valor y que todo le está permitido.
+
+296
+00:17:34,051 --> 00:17:37,971
+Mata a una mujer despreciable, con muy buenas razones.
+
+297
+00:17:38,211 --> 00:17:40,371
+Y descubre algo terrible:
+
+298
+00:17:40,411 --> 00:17:43,971
+el Raskólnikov de después ya no es el de antes.
+
+299
+00:17:44,211 --> 00:17:46,691
+Ha cruzado una línea sin retorno.
+
+300
+00:17:48,240 --> 00:17:53,760
+En Los demonios, Dostoyevski profetizó lo que le pasaría a una sociedad poseída por
+
+301
+00:17:53,760 --> 00:17:54,880
+esas ideas.
+
+302
+00:17:55,200 --> 00:17:59,360
+Décadas después, Solzhenitsyn escribió Archipiélago Gulag.
+
+303
+00:17:59,840 --> 00:18:02,160
+Uno era ficción y profecía.
+
+304
+00:18:02,400 --> 00:18:06,960
+El otro, la crónica de que todo ocurrió exactamente así.
+
+305
+00:18:12,318 --> 00:18:15,918
+Al final, Peterson recorre los atributos de esa idea.
+
+306
+00:18:16,478 --> 00:18:17,198
+Como padre:
+
+307
+00:18:17,598 --> 00:18:22,758
+con él se puede pactar, responde al sacrificio, juzga y perdona.
+
+308
+00:18:23,038 --> 00:18:23,878
+Como hijo:
+
+309
+00:18:24,078 --> 00:18:29,078
+convierte el caos en orden, mata dragones, muere y renace.
+
+310
+00:18:29,358 --> 00:18:30,238
+Como espíritu:
+
+311
+00:18:30,638 --> 00:18:34,638
+es la voz callada de la conciencia, enemiga del engaño,
+
+312
+00:18:34,718 --> 00:18:37,118
+de la arrogancia y del resentimiento.
+
+313
+00:18:37,598 --> 00:18:39,518
+Arde sin consumirse.
+
+314
+00:18:40,985 --> 00:18:44,905
+En el principio, Dios creó los cielos y la tierra.
+
+315
+00:18:45,225 --> 00:18:51,185
+La tierra era caos y vacío, y la oscuridad cubría la superficie del abismo.
+
+316
+00:18:51,465 --> 00:18:54,985
+Y el espíritu de Dios aleteaba sobre las aguas.
+
+317
+00:18:56,435 --> 00:18:57,715
+Y dijo Dios:
+
+318
+00:18:57,955 --> 00:18:59,475
+que exista la luz.
+
+319
+00:18:59,955 --> 00:19:01,635
+Y la luz existió.
+
+320
+00:19:05,081 --> 00:19:08,841
+Quizá esta sea la idea más antigua que tenemos:
+
+321
+00:19:08,881 --> 00:19:12,921
+que la conciencia y la palabra verdadera, frente al caos,
+
+322
+00:19:13,001 --> 00:19:14,601
+crean un mundo habitable.
+
+323
+00:19:15,241 --> 00:19:18,281
+Esa historia no vive solo en un libro antiguo.
+
+324
+00:19:18,601 --> 00:19:19,801
+Vive en ti.
+
+325
+00:19:20,121 --> 00:19:25,561
+Cada vez que abres los ojos ante lo que temes, cada vez que hablas con verdad,
+
+326
+00:19:25,601 --> 00:19:28,388
+cada vez que conviertes el caos en orden.
+
+327
+00:19:28,388 --> 00:19:28,574
+.
+
+328
+00:19:28,574 --> 00:19:28,761
+.
+
+329
+00:19:28,841 --> 00:19:31,961
+repites el acto más antiguo de todos.
+
+330
+00:19:33,408 --> 00:19:34,808
+Abre los ojos.
+
+331
+00:19:35,088 --> 00:19:36,648
+Habla con verdad.
+
+332
+00:19:36,928 --> 00:19:38,448
+Y haz un mundo.
+
