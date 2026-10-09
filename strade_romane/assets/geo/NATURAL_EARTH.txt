@@ -1,0 +1,7 @@
+coste_50m.json, terre_50m.json
+Derived from Natural Earth 1:50m "coastline" and "land" (v5, files ne_50m_coastline.geojson /
+ne_50m_land.geojson from github.com/nvkelso/natural-earth-vector). Natural Earth data is in the
+public domain (https://www.naturalearthdata.com/about/terms-of-use/).
+Processing: Douglas-Peucker simplification in lon/lat (0.02 deg inside lon -20..60 / lat 20..62,
+0.15 deg elsewhere), tiny islands dropped, coordinates rounded. Land kept only around the
+Roman empire (used as a land mask for the procedural road web). Format: [[ [lon, lat], ... ], ...]
