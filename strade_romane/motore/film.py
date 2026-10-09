@@ -47,20 +47,66 @@ def durata(path):
                                           "-of", "csv=p=0", path]))
 
 
+CPS = 13.0                # design speaking rate the scenes were timed against
+
+
+def _warp_points(b, has_p, n_act, n_est, lead, Tl_act, Tl_des):
+    """Piecewise-linear map actual local time -> design local time, from word timings."""
+    half = XF / 2 if has_p else 0.0
+    s0 = half + lead
+    pts = [(0.0, 0.0), (s0, s0)]
+    al = os.path.join(ROOT, "audio", "narrazione", b["id"] + ".align.json")
+    if os.path.exists(al):
+        a = json.load(open(al, encoding="utf-8"))
+        chars, st = a["characters"], a["character_start_times_seconds"]
+        n = len(chars)
+        L = len(b["testo"])
+        for i in range(0, n, 6):
+            if chars[i] == " ":
+                continue
+            ta = s0 + st[i]
+            td = s0 + (i / max(1, n)) * L / CPS
+            if ta > pts[-1][0] + 0.05 and td > pts[-1][1] + 0.01:
+                pts.append((ta, td))
+    end_a, end_d = s0 + n_act, s0 + n_est
+    if end_a > pts[-1][0] and end_d > pts[-1][1]:
+        pts.append((end_a, end_d))
+    pts.append((max(Tl_act, pts[-1][0] + 0.1), max(Tl_des, pts[-1][1] + 0.1)))
+    return pts
+
+
+def warp(pts, t):
+    if t <= pts[0][0]:
+        return t
+    for (a0, d0), (a1, d1) in zip(pts, pts[1:]):
+        if t <= a1:
+            return d0 + (d1 - d0) * (t - a0) / max(1e-6, a1 - a0)
+    a1, d1 = pts[-1]
+    return d1 + (t - a1)
+
+
 def timeline():
     g = json.load(open(os.path.join(ROOT, "testo", "copione.json"), encoding="utf-8"))
     out, t = [], 0.0
-    for b in g["battute"]:
+    bs = g["battute"]
+    for k, b in enumerate(bs):
         mp3 = os.path.join(ROOT, "audio", "narrazione", b["id"] + ".mp3")
-        n = durata(mp3) if os.path.exists(mp3) else len(b["testo"]) / 13.0
+        n_est = len(b["testo"]) / CPS
+        n = durata(mp3) if os.path.exists(mp3) else n_est
         lead = LEAD + b.get("pausa_prima", 0.0)
         tail = TAIL + b.get("pausa_dopo", 0.0)
-        if b is g["battute"][0]:
+        if k == 0:
             lead += 2.5          # the line draws itself before the first words
-        if b is g["battute"][-1]:
+        if k == len(bs) - 1:
             tail += 6.0          # let the ending breathe
         d = lead + n + tail
-        out.append(dict(id=b["id"], visual=b["visual"], start=t, dur=d, voice_at=t + lead, narr=n, testo=b["testo"]))
+        has_p, has_n = k > 0, k + 1 < len(bs)
+        ext = (XF / 2) * has_p + (XF / 2) * has_n
+        Tl_act = d + ext
+        Tl_des = lead + n_est + tail + ext
+        wp = _warp_points(b, has_p, n, n_est, lead, Tl_act, Tl_des)
+        out.append(dict(id=b["id"], visual=b["visual"], start=t, dur=d, voice_at=t + lead, narr=n, testo=b["testo"],
+                        warp=wp, Tdes=Tl_des))
         t += d
     return out
 
@@ -95,7 +141,8 @@ def draw_frame(tl, T):
         slide = 150 * (1 - ease_io(clamp(t / XF))) * has_p - 150 * ease_io(clamp((t - (Tl - XF)) / XF)) * has_n
         ctx.save()
         ctx.translate(slide, 0)
-        road = SCENES.get(b["visual"], _placeholder)(pen, t, Tl, appear, vanish)
+        td = warp(b["warp"], t)
+        road = SCENES.get(b["visual"], _placeholder)(pen, td, b["Tdes"], appear, vanish)
         ctx.restore()
         if road:
             roads.append([(x + slide, y) for x, y in road])

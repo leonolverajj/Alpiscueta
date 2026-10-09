@@ -1,0 +1,6 @@
+Felix Mendelssohn, Symphony No. 4 in A major, Op. 90 "Italian"
+  - I. Allegro vivace          (it1_allegro_vivace.mp3)
+  - III. Con moto moderato     (it3_con_moto.mp3)
+Recording: Musopen Kickstarter recordings, released by Musopen into the
+public domain: CC0 1.0 Universal. Source: https://archive.org/details/MusopenKickstarterRecordings
+(licence: http://creativecommons.org/publicdomain/zero/1.0/). The composition itself is public domain.
