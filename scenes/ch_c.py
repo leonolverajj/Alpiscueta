@@ -374,7 +374,7 @@ def campfire(ctx, t, T, seg):
     glow(ctx, FX, FY - 120, 760, "rust", 0.32 + 0.04 * flick)
     glow(ctx, FX, FY - 80, 330, "gold", 0.48 + 0.06 * flick)
     # the elder storyteller, behind the fire, gesturing up at the smoke
-    F.person(ctx, FX + 10, H * 0.66, 340, color="rust_d", shade="ink2", pose="stand", t=t, fx=1,
+    F.person(ctx, FX + 250, H * 0.70, 340, color="rust_d", shade="ink2", pose="stand", t=t, fx=1,
              head_c="skin2", arm_up=0.85 + 0.15 * math.sin(t * 1.7), seed=5)
     # smoke strands rising from the fire
     for i in range(5):

@@ -367,13 +367,14 @@ def _medallion(ctx, t, cx, cy, R, appear, base, content, label, words, seed):
             stroke(ctx, [(math.cos(a) * (R + 26), math.sin(a) * (R + 26)),
                          (math.cos(a) * (R + 38), math.sin(a) * (R + 38))], 4, "gold_d", taper=(0, 0))
     text(ctx, label, cx, cy + R + 84, 56, FONT_TITLE, "g0", tracking=0.14, alpha=k)
+    offs = [(-150, -(R + 46)), (150, -(R + 46)), (-150, R + 30), (150, R + 30)]   # clear of the ring
     for j, w in enumerate(words):
         ka = ss(win(t, appear + 0.5 + j * 0.25, appear + 1.0 + j * 0.25))
         if ka <= 0.01:
             continue
-        a = math.radians(-135 + 90 * j)
-        x = cx + math.cos(a) * (R + 66)
-        y = cy + math.sin(a) * (R + 66) * 0.92 + math.sin(t * 0.8 + j) * 6
+        ox, oy = offs[j]
+        x = cx + ox + math.sin(t * 0.5 + j) * 6
+        y = cy + oy + math.sin(t * 0.8 + j) * 5
         pulse = 0.6 + 0.4 * math.sin(t * 1.5 + j * 2.1)
         text(ctx, w, x, y, 26, FONT_CAPS, "g2", tracking=0.1, alpha=0.9 * ka * pulse)
 
