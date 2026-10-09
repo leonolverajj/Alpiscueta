@@ -98,7 +98,7 @@ def timeline():
         if k == 0:
             lead += 2.5          # the line draws itself before the first words
         if k == len(bs) - 1:
-            tail += 6.0          # let the ending breathe
+            tail += 10.0         # let the ending breathe with the music
         d = lead + n + tail
         has_p, has_n = k > 0, k + 1 < len(bs)
         ext = (XF / 2) * has_p + (XF / 2) * has_n

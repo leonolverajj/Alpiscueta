@@ -25,6 +25,9 @@ LIB = {
     "tic": ("a soft wooden tick, like a single click of an abacus bead", 0.6),
     "campanella": ("a single soft warm chime, gentle and pleasant", 2.0),
     "soffio": ("a very soft airy whoosh, gentle transition sound", 1.2),
+    "rane": ("frogs croaking in a marsh at night, crickets, calm", 7.0),
+    "zanzara": ("a single mosquito buzzing around close to the ear, comic", 3.0),
+    "acqua_canale": ("a small boat gliding slowly on calm canal water at night, soft ripples", 6.0),
 }
 
 def gen(name, prompt, dur):

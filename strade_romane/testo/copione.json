@@ -43,6 +43,11 @@
       "testo": "C'erano perfino delle regole. Già le Dodici Tavole, a metà del quinto secolo avanti Cristo, fissavano la larghezza minima di una via: otto piedi in rettilineo, sedici in curva. Perché in curva, si sa, i carri hanno bisogno di spazio."
     },
     {
+      "id": "b07p",
+      "visual": "pompei",
+      "testo": "E dentro le città? A Pompei, le strade raccontano ancora la vita di tutti i giorni. Nella pietra si vedono i solchi lasciati dalle ruote dei carri. E in mezzo alla carreggiata, grandi pietre in fila: servivano ad attraversare senza bagnarsi i piedi, quando la strada si riempiva d'acqua piovana. Le ruote passavano proprio negli spazi tra una pietra e l'altra."
+    },
+    {
       "id": "b08",
       "visual": "miliario",
       "testo": "Ogni mille passi, cioè ogni miglio romano, circa un chilometro e mezzo, ecco una colonna di pietra: il miliario. Diceva quanta strada mancava, e chi l'aveva costruita o restaurata. Nel venti avanti Cristo, Augusto fece innalzare nel Foro il Miliario d'oro: il punto simbolico in cui si incontravano tutte le grandi strade."
@@ -61,6 +66,11 @@
       "id": "b11",
       "visual": "tabula",
       "testo": "Sulle strade viaggiavano soldati, mercanti, pellegrini, notizie e idee. Per orientarsi c'erano gli itinerari, elenchi di tappe e distanze. Di una carta stradale romana ci è arrivata una copia medievale straordinaria: la Tabula Peutingeriana, un rotolo lungo quasi sette metri, oggi conservato a Vienna."
+    },
+    {
+      "id": "b11o",
+      "visual": "orazio",
+      "testo": "Qualcuno ci ha perfino lasciato un diario di viaggio. Nel trentasette avanti Cristo il poeta Orazio percorse l'Appia da Roma a Brindisi, in circa due settimane, e lo raccontò in una satira: acqua pessima, locande piene di barcaioli e osti scortesi... e di notte zanzare e rane delle paludi, che non lo lasciavano dormire."
     },
     {
       "id": "b12",

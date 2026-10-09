@@ -99,8 +99,9 @@ def fango(pen, t, T, appear, vanish):
     wheel = ellipse(cx, ROAD_Y - 30 + sink * 0.2, 46, 46, 30)
     spokes = [[(cx, ROAD_Y - 30), (cx + 46 * math.cos(k * math.pi / 3 + 0.2), ROAD_Y - 30 + 46 * math.sin(k * math.pi / 3 + 0.2))]
               for k in range(3)]
-    bed = [[(cx - 120, ROAD_Y - 70), (cx + 120, ROAD_Y - 74), (cx + 110, ROAD_Y - 120), (cx - 110, ROAD_Y - 116),
-            (cx - 120, ROAD_Y - 70)]]
+    bed = [{"p": [(cx - 120, ROAD_Y - 70), (cx + 120, ROAD_Y - 74), (cx + 112, ROAD_Y - 120), (cx - 112, ROAD_Y - 116),
+                  (cx - 120, ROAD_Y - 70)], "smooth": False},
+           {"p": [(cx - 110, ROAD_Y - 100), (cx + 110, ROAD_Y - 103)], "smooth": False, "w": 0.6, "a": 0.7}]
     pen.lines([wheel] + spokes + bed, appear, vanish, 1.0, 1.0, seed=33)
     pen.lines([[(cx - 140, ROAD_Y - 14), (cx - 90, ROAD_Y - 2), (cx - 40, ROAD_Y - 10)],
                [(cx + 40, ROAD_Y - 8), (cx + 100, ROAD_Y), (cx + 150, ROAD_Y - 12)]], appear, vanish, 0.6, 0.8, seed=34)
@@ -125,8 +126,9 @@ def fango(pen, t, T, appear, vanish):
     k = win(t, 10.0, 12.0)
     if k > 0:
         for j, (vx, vy) in enumerate([(380, 230), (960, 160), (1560, 250)]):
-            house = [[(vx - 40, vy + 30), (vx - 40, vy), (vx, vy - 26), (vx + 40, vy), (vx + 40, vy + 30), (vx - 40, vy + 30)],
-                     [(vx - 10, vy + 30), (vx - 10, vy + 12), (vx + 8, vy + 12), (vx + 8, vy + 30)]]
+            house = [{"p": [(vx - 40, vy + 30), (vx - 40, vy), (vx, vy - 26), (vx + 40, vy), (vx + 40, vy + 30), (vx - 40, vy + 30)],
+                      "smooth": False},
+                     {"p": [(vx - 10, vy + 30), (vx - 10, vy + 12), (vx + 8, vy + 12), (vx + 8, vy + 30)], "smooth": False}]
             pen.lines(house, clamp(k * 1.5 - j * 0.25), vanish, 0.8, 0.9, seed=40 + j)
         q = win(t, 12.5, 13.5)
         if q > 0:
