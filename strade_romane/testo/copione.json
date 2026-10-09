@@ -1,0 +1,86 @@
+{
+  "titolo": "La linea che partì da Roma",
+  "voce": {
+    "nome": "Antonio Farina",
+    "voice_id": "uScy1bXtKz8vPzfdFsFw",
+    "model_id": "eleven_v4",
+    "language_code": "it"
+  },
+  "battute": [
+    {
+      "id": "b01",
+      "visual": "linea",
+      "testo": "Ogni volta che diciamo «strada», stiamo parlando latino. Viene da via strata: la via lastricata, stesa strato su strato. Gli inglesi dicono street, i tedeschi Straße: stessa origine. Ma la parola è solo l'inizio. Questa è la storia di una linea, partita da Roma, che non si è mai più fermata."
+    },
+    {
+      "id": "b02",
+      "visual": "fango",
+      "testo": "Prima delle grandi strade romane, in Italia si viaggiava su sentieri e piste di terra: polvere d'estate, fango d'inverno. Esistevano già vie importanti, anche gli Etruschi scavavano passaggi nella roccia. Ma nessuno aveva ancora pensato a una rete."
+    },
+    {
+      "id": "b03",
+      "visual": "appio",
+      "testo": "Nel trecentododici avanti Cristo, Roma combatte i Sanniti, sulle montagne del sud. Il censore Appio Claudio ha un'idea tanto semplice quanto rivoluzionaria: una strada solida, percorribile con qualsiasi tempo, da Roma fino a Capua. Più di duecento chilometri. Nasce la Via Appia. Più tardi Appio Claudio sarà chiamato «il Cieco»... eppure ci vedeva lunghissimo."
+    },
+    {
+      "id": "b04",
+      "visual": "regina",
+      "testo": "Nel giro di qualche decennio l'Appia arriva fino a Brindisi, sull'Adriatico: oltre cinquecento chilometri. I poeti la chiamarono regina viarum, la regina delle strade. E dal duemilaventiquattro è patrimonio dell'umanità."
+    },
+    {
+      "id": "b05",
+      "visual": "groma",
+      "testo": "Ma come si costruisce una strada così? Prima arrivano gli agrimensori, con la groma: un'asta con una croce e quattro fili a piombo, per traguardare allineamenti perfetti. Tra le paludi pontine e Terracina, l'Appia corre dritta per circa sessanta chilometri. Ma quando la montagna lo imponeva, i Romani sapevano anche curvare."
+    },
+    {
+      "id": "b06",
+      "visual": "cantiere",
+      "testo": "Poi si scava. Una trincea, riempita a strati: pietre grosse sul fondo, poi ghiaia e pietrisco sempre più fini, ben compattati. In superficie, sulle vie più importanti, grandi blocchi di pietra lavica incastrati tra loro: i basoli. La strada è leggermente bombata, perché la pioggia scivoli via ai lati. Non c'era una ricetta unica: ogni strada usava i materiali e il terreno del luogo. A lavorare erano spesso i legionari, insieme a operai e schiavi."
+    },
+    {
+      "id": "b07",
+      "visual": "tavole",
+      "testo": "C'erano perfino delle regole. Già le Dodici Tavole, a metà del quinto secolo avanti Cristo, fissavano la larghezza minima di una via: otto piedi in rettilineo, sedici in curva. Perché in curva, si sa, i carri hanno bisogno di spazio."
+    },
+    {
+      "id": "b08",
+      "visual": "miliario",
+      "testo": "Ogni mille passi, cioè ogni miglio romano, circa un chilometro e mezzo, ecco una colonna di pietra: il miliario. Diceva quanta strada mancava, e chi l'aveva costruita o restaurata. Nel venti avanti Cristo, Augusto fece innalzare nel Foro il Miliario d'oro: il punto simbolico in cui si incontravano tutte le grandi strade."
+    },
+    {
+      "id": "b09",
+      "visual": "rete",
+      "testo": "Strada dopo strada, la linea diventa una rete. La Flaminia verso Rimini. L'Aurelia lungo il Tirreno. L'Emilia verso il nord, che darà perfino il nome a una regione. E poi oltre le Alpi e oltre il mare: la Domizia verso la Spagna, l'Egnatia attraverso i Balcani."
+    },
+    {
+      "id": "b10",
+      "visual": "posta",
+      "testo": "Con Augusto nasce il cursus publicus, il servizio di Stato per messaggi e funzionari. Lungo le strade sorgono stazioni per cambiare i cavalli e locande per la notte. Un corriere percorreva, in media, una cinquantina di miglia al giorno. E Plinio il Vecchio racconta un record: il futuro imperatore Tiberio, accorrendo dal fratello Druso, malato in Germania, coprì duecento miglia in un giorno e una notte."
+    },
+    {
+      "id": "b11",
+      "visual": "tabula",
+      "testo": "Sulle strade viaggiavano soldati, mercanti, pellegrini, notizie e idee. Per orientarsi c'erano gli itinerari, elenchi di tappe e distanze. Di una carta stradale romana ci è arrivata una copia medievale straordinaria: la Tabula Peutingeriana, un rotolo lungo quasi sette metri, oggi conservato a Vienna."
+    },
+    {
+      "id": "b12",
+      "visual": "ponti",
+      "testo": "Dove c'era un fiume, un ponte. Dove c'era una montagna, a volte, una galleria. Il ponte di Tiberio, a Rimini, terminato nel ventuno dopo Cristo, si attraversa ancora oggi. E sulla Flaminia, nella gola del Furlo, Vespasiano fece scavare nella roccia una galleria di quasi quaranta metri: ancora oggi aperta al traffico."
+    },
+    {
+      "id": "b13",
+      "visual": "mondo",
+      "testo": "Quanto era grande, alla fine, questa rete? Nel duemilaventicinque il progetto Itiner-e ha ricostruito le strade dell'impero intorno al centocinquanta dopo Cristo: quasi trecentomila chilometri. Più di sette volte il giro della Terra. E solo per una piccola parte ne conosciamo il tracciato esatto."
+    },
+    {
+      "id": "b14",
+      "visual": "proverbio",
+      "testo": "«Tutte le strade portano a Roma», diciamo. Curiosamente, il proverbio non è romano: lo troviamo nel Medioevo, in un verso di Alano di Lilla, intorno al millecentosettantacinque. E parlava di pellegrini."
+    },
+    {
+      "id": "b15",
+      "visual": "oggi",
+      "testo": "Oggi le strade statali italiane portano ancora quei nomi: Appia, Flaminia, Aurelia, Emilia. Molte delle nostre strade corrono proprio sopra le loro. Così, quando viaggi, è probabile che tu stia seguendo una linea tracciata più di duemila anni fa. Una linea partita da Roma... che non si è mai fermata."
+    }
+  ]
+}
