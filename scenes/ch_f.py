@@ -9,7 +9,6 @@ from engine.kit import (FONT_CAPS, FONT_TITLE, H, W, at, bg_studio, blade, camer
                         setc, shape, speedlines, ss, stroke, text, ui_glyphs, win)
 from engine import figures as F
 from . import scene
-from .myth import waves
 
 
 # ----------------------------------------------------------------- shared helpers
@@ -43,15 +42,34 @@ def _prefix(pts, k):
     return out
 
 
+def _churn(ctx, t, y0, amp, color, seed, crest, ink=4.5):
+    """Rolling, chopped water: a smooth sum of swells, with foam on the crests."""
+    ph = seed * 1.7
+    top = []
+    for i in range(41):
+        x = -80 + i * (W + 160) / 40
+        y = y0 + amp * (0.55 * math.sin(x * 0.0093 + t * 1.1 + ph)
+                        + 0.30 * math.sin(x * 0.0231 - t * 1.9 + ph * 2.3)
+                        + 0.15 * math.sin(x * 0.047 + t * 2.7 + ph * 0.7))
+        top.append((x, y))
+    shape(ctx, top + [(W + 80, H + 80), (-80, H + 80)], color, ink, smooth=True, seed=seed)
+    rng = random.Random(seed)
+    for i in range(1, len(top) - 1):
+        x, y = top[i]
+        if y < top[i - 1][1] and y < top[i + 1][1] and rng.random() < 0.7:
+            stroke(ctx, [(x - 34, y + 12), (x, y - 2), (x + 30, y + 10)], 4, crest, alpha=0.75,
+                   taper=(0.3, 0.6), seed=i)
+
+
 def _sea(ctx, t, amp, warm=0.0):
     """Three churning layers of water. warm=0 is pitch dark, warm=1 is gold-lit."""
     c_back = mix(mix("sea", "ink", 0.35), "gold_d", warm * 0.5)
     c_mid = mix("sea", "gold_d", warm * 0.6)
     c_front = mix("ink", "gold_d", warm * 0.3)
     crest = mix("sea_l", "gold_l", warm)
-    waves(ctx, t * 0.9, H * 0.56, c_back, n=7, amp=amp * 0.8, seed=11, crest=crest)
-    waves(ctx, t * 1.1, H * 0.70, c_mid, n=6, amp=amp, seed=12, crest=crest)
-    waves(ctx, t * 1.3, H * 0.86, c_front, n=5, amp=amp * 1.15, seed=13, crest=crest, ink=6)
+    _churn(ctx, t * 0.9, H * 0.58, amp * 0.6, c_back, 11, crest, ink=3.5)
+    _churn(ctx, t * 1.1, H * 0.71, amp * 0.85, c_mid, 12, crest, ink=4)
+    _churn(ctx, t * 1.3, H * 0.87, amp * 1.0, c_front, 13, crest, ink=5.5)
 
 
 # ----------------------------------------------------------------- s48 raskolnikov
@@ -300,22 +318,24 @@ def _c_hijo(ctx, t, R):
 
 
 def _c_espiritu(ctx, t, R):
-    """A flame that burns without consuming the bush."""
-    glow(ctx, 0, 60, R * 1.2, "teal", 0.35)
+    """A flame that burns without consuming the bush: the leaves stay green and whole."""
+    glow(ctx, 0, 90, R * 1.1, "teal", 0.30)
     rng = random.Random(21)
-    for i in range(15):
-        bx = -165 + i * 24 + rng.uniform(-6, 6)
-        tip = (bx + rng.uniform(-30, 30), 150 - rng.uniform(110, 150))
-        shape(ctx, blade((bx, 160), tip, 34, bend=rng.uniform(-0.2, 0.2)), "teal_d" if i % 3 else "sea_l", 4,
-              seed=i)
-    for i in range(7):
-        x = lerp(-44, 44, i / 6)
-        L = 120 + 50 * math.sin(t * 6 + i * 1.7) + (i % 2) * 20
-        tipx = x * 0.5 + math.sin(t * 4 + i) * 10
-        shape(ctx, blade((x, 80), (tipx, 80 - L), 46, bend=0.08), "teal", 0, alpha=0.9)
-        shape(ctx, blade((x * 0.9, 80), (tipx * 0.95, 80 - L * 0.8), 26, bend=-0.08), "teal_l", 0)
-    shape(ctx, blade((0, 80), (0, -40 + math.sin(t * 9) * 8), 14), "white", 0, alpha=0.9)
-    glow(ctx, 0, -10, 150, "teal_l", 0.45)
+    for i in range(17):   # a rounded bush, rooted low, leaves intact
+        bx = -150 + i * 19 + rng.uniform(-5, 5)
+        tip = (bx + rng.uniform(-26, 26), 150 - rng.uniform(80, 120))
+        shape(ctx, blade((bx, 170), tip, 40, bend=rng.uniform(-0.25, 0.25)),
+              "teal_d" if i % 3 else "sea", 4, seed=i)
+        stroke(ctx, [(bx, 150), (tip[0] * 0.8 + bx * 0.2, tip[1] + 18)], 2.2, "teal", alpha=0.55, taper=(0.2, 0.6))
+    glow(ctx, 0, 84, 150, "teal_l", 0.45)
+    for i in range(5):   # flame tongues rising from the bush's heart
+        x = lerp(-34, 34, i / 4)
+        L = 130 + 50 * math.sin(t * 6 + i * 1.7) + (i % 2) * 22
+        sway = math.sin(t * 4 + i) * 10
+        tip = (x * 0.4 + sway, 90 - L)
+        shape(ctx, blade((x, 96), tip, 44, bend=0.22 * (1 if i % 2 else -1)), "teal", 0, alpha=0.9)
+        shape(ctx, blade((x * 0.8, 96), (tip[0] * 0.9, 96 - L * 0.78), 22, bend=0.15), "teal_l", 0)
+    shape(ctx, blade((0, 100), (math.sin(t * 9) * 6, -30 + math.sin(t * 7) * 10), 12), "white", 0, alpha=0.95)
     particles(ctx, t, 26, seed=4, color="teal_l", region=(-R, -R, R, R), speed=(-6, -34), size=(1.0, 2.6),
               alpha=0.7)
 
@@ -341,8 +361,8 @@ def _medallion(ctx, t, cx, cy, R, appear, base, content, label, words, seed):
         if ka <= 0.01:
             continue
         a = math.radians(-135 + 90 * j)
-        x = cx + math.cos(a) * (R + 92)
-        y = cy + math.sin(a) * (R + 92) * 0.92 + math.sin(t * 0.8 + j) * 6
+        x = cx + math.cos(a) * (R + 124)
+        y = cy + math.sin(a) * (R + 124) * 0.92 + math.sin(t * 0.8 + j) * 6
         pulse = 0.6 + 0.4 * math.sin(t * 1.5 + j * 2.1)
         text(ctx, w, x, y, 26, FONT_CAPS, "g2", tracking=0.1, alpha=0.9 * ka * pulse)
 
@@ -419,12 +439,13 @@ def light_scene(ctx, t, T, seg):
 
     # rays burst from the point of light
     if k_burst > 0:
+        ray_a = 0.45 * k_burst * (1 - 0.6 * calm)
         for i in range(36):
             ang = i * 2 * math.pi / 36 + 0.05 * math.sin(i * 3.1)
             L = lerp(0, 1500, k_burst) * (0.6 + 0.4 * math.sin(i * 7.1))
             fillp(ctx, [(sx, sy), (sx + math.cos(ang - 0.03) * L, sy + math.sin(ang - 0.03) * L),
                         (sx + math.cos(ang + 0.03) * L, sy + math.sin(ang + 0.03) * L)],
-                  "gold_l", alpha=0.45 * k_burst)
+                  "gold_l", alpha=ray_a)
     # the point of light itself
     if k_pt > 0 and k_burst < 0.95:
         glow(ctx, sx, sy, 60 + 60 * k_pt, "white", 0.9 * k_pt)
@@ -432,10 +453,12 @@ def light_scene(ctx, t, T, seg):
 
     # the calm water mirrors the light
     if calm > 0:
+        glow(ctx, sx, H * 0.78, 620, "gold_l", 0.45 * calm)
         for j in range(16):
             y = H * 0.6 + j * 30
-            w = (1 - j / 16) * 260 * calm
-            stroke(ctx, [(sx - w, y), (sx + w, y)], 6, "gold_l", alpha=0.75 * calm, taper=(0.2, 0.2), seed=j)
+            w = (1 - j / 16) * 300 * calm
+            stroke(ctx, [(sx - w, y), (sx + w, y)], 4 + j * 0.25, "gold_l", alpha=0.7 * calm,
+                   taper=(0.2, 0.2), seed=j)
 
     # white-gold flood, then it clears to reveal the calm sea
     if flood > 0:
@@ -455,21 +478,26 @@ def _eye_halo(ctx, cx, cy, R, k, t):
         if kk <= 0.01:
             continue
         blink = 0.85 + 0.15 * math.sin(t * 2 + i)
-        with at(ctx, ex, ey, 0.9, a + math.pi / 2):
-            glow(ctx, 0, 0, 46, "teal", 0.25 * kk)
-            shape(ctx, [(-30, 0), (0, -17 * blink), (30, 0), (0, 17 * blink)], "g0", 0, alpha=0.5 * kk)
-            fillp(ctx, circle_pts(0, 0, 10, 14), "teal", alpha=0.6 * kk)
-            fillp(ctx, circle_pts(0, 0, 4, 10), "ink", alpha=0.8 * kk)
+        with at(ctx, ex, ey, 1.25, a + math.pi / 2):
+            glow(ctx, 0, 0, 60, "teal", 0.3 * kk)
+            shape(ctx, [(-30, 0), (0, -18 * blink), (30, 0), (0, 18 * blink)], "g0", 3, alpha=0.6 * kk)
+            fillp(ctx, circle_pts(0, 0, 10, 14), "teal", alpha=0.85 * kk)
+            fillp(ctx, circle_pts(0, 0, 4.5, 10), "ink", alpha=0.9 * kk)
 
 
 def _lids(ctx, open_k):
-    """Eyelid cover drawn in head coordinates: closed at 0, open at 1."""
+    """Eyelids in head coordinates: closed at 0, open at 1. Each lid covers only its own eye."""
     closed = 1 - open_k
     if closed <= 0.01:
         return
-    lid = lerp(-18, 14, closed)
-    fillp(ctx, [(-60, -18), (80, -18), (80, lid), (-60, lid)], F.HERO["skin"])
-    stroke(ctx, [(-52, lid), (74, lid)], 4.5, "ink", taper=(0.1, 0.1))
+    skin = F.HERO["skin"]
+    for ex, ew, ey in ((34, 40, -4), (-18, 29, -2)):
+        top = ey - 16
+        lid = lerp(top, ey + 7, closed)
+        fillp(ctx, [(ex - ew / 2 - 3, top), (ex + ew / 2 + 3, top), (ex + ew / 2 + 3, lid), (ex - ew / 2 - 3, lid)],
+              skin)
+        stroke(ctx, [(ex - ew / 2, lid), (ex + ew * 0.1, lid + 1.5), (ex + ew / 2 - 2, lid - 1)], 4, "ink",
+               taper=(0.15, 0.15), smooth=True)
 
 
 def _hero(ctx, x, y, s, t, open_k, wind, light):
@@ -480,8 +508,8 @@ def _hero(ctx, x, y, s, t, open_k, wind, light):
             F.head(ctx, c, "grim", t, wind)
             if light > 0.01:
                 fillp(ctx, [(8, -96), (72, -44), (70, 6), (44, 60), (16, 88), (-4, -40)], "gold_l",
-                      alpha=0.28 * light)
-                glow(ctx, 40, -30, 190, "gold_l", 0.22 * light)
+                      alpha=0.38 * light)
+                glow(ctx, 40, -30, 200, "gold_l", 0.3 * light)
                 stroke(ctx, [(-40, -118), (10, -150), (62, -118)], 6, "gold_l", alpha=0.6 * light, taper=(0.3, 0.3))
             _lids(ctx, open_k)
 
@@ -509,7 +537,7 @@ def hero_final(ctx, t, T, seg):
 
     if light > 0:
         beam = [(W * 0.62, -40), (W * 0.80, -40), (hx + 150, hy - 60), (hx - 40, hy + 40)]
-        fillp(ctx, beam, "gold_l", alpha=0.16 * light)
+        fillp(ctx, beam, "gold_l", alpha=0.22 * light)
 
     _eye_halo(ctx, hx, hy - 30, 330 * hs / 1.45, ring, t)
     speedlines(ctx, hx, hy, t, 30, 420, 1500, "gold_l", alpha=0.12 * step)
